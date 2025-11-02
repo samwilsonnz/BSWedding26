@@ -2,7 +2,24 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+
+// Load environment variables (works locally with .env file, Railway provides them directly)
 require('dotenv').config();
+
+// Validate required environment variables
+const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'STRIPE_SECRET_KEY', 'ADMIN_CODE'];
+const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingEnvVars.length > 0) {
+  console.error('❌ Missing required environment variables:', missingEnvVars.join(', '));
+  console.error('Available env vars:', Object.keys(process.env).filter(k => k.startsWith('SUPABASE') || k.startsWith('STRIPE') || k === 'ADMIN_CODE'));
+  process.exit(1);
+}
+
+console.log('✅ Environment variables loaded successfully');
+console.log('   - SUPABASE_URL:', process.env.SUPABASE_URL ? '✓' : '✗');
+console.log('   - SUPABASE_ANON_KEY:', process.env.SUPABASE_ANON_KEY ? '✓' : '✗');
+console.log('   - STRIPE_SECRET_KEY:', process.env.STRIPE_SECRET_KEY ? '✓' : '✗');
+console.log('   - ADMIN_CODE:', process.env.ADMIN_CODE ? '✓' : '✗');
 
 // Initialize Stripe with your live key
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
