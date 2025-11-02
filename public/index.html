@@ -1,0 +1,3602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samuel & Beatrice's Wedding | March 14th, 2026 | Christchurch, New Zealand</title>
+
+    <!-- Meta Tags for Social Sharing -->
+    <meta name="description" content="Join us as we celebrate the wedding of Samuel Wilson and Beatrice Billcliff on March 14th, 2026 in Christchurch, New Zealand.">
+    <meta property="og:title" content="Samuel & Beatrice's Wedding">
+    <meta property="og:description" content="Celebrating our love on March 14th, 2026 in Christchurch, New Zealand">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bswedding26.com">
+    <meta property="og:image" content="https://bswedding26.com/Photos/Bridge%20Photo.PNG">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Samuel & Beatrice's Wedding">
+    <meta name="twitter:description" content="March 14th, 2026 | Christchurch, New Zealand">
+    <meta name="twitter:image" content="https://bswedding26.com/Photos/Bridge%20Photo.PNG">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://unpkg.com/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+    <script src="enhancements.js" defer></script>
+    <style>
+        :root {
+            --navy: #1e3a5f;
+            --light-navy: #2c5282;
+            --botanical-blue: #4a7c9e;
+            --beige: #f5f5dc;
+            --cream: #faf8f3;
+            --white: #ffffff;
+            --gold: #d4af37;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-lg: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Lato', 'Georgia', sans-serif;
+            color: var(--navy);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Script Font for Elegant Text */
+        .script-font {
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Login Screen Styles */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--white) 30%, var(--beige) 70%, var(--cream) 100%);
+        }
+
+        .login-container {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px var(--shadow);
+            border: 3px solid var(--beige);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .login-container h1 {
+            color: var(--navy);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .login-container p {
+            color: var(--light-navy);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .login-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-option {
+            flex: 1;
+            background: var(--beige);
+            border: 2px solid var(--navy);
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .login-option:hover, .login-option.active {
+            background: var(--navy);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .login-option i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .guest-code-form {
+            display: none;
+        }
+
+        .guest-code-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--navy);
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--beige);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--navy);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--light-navy) 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 58, 95, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* QR Scanner Styles */
+        .qr-scanner {
+            display: none;
+        }
+
+        .qr-scanner.active {
+            display: block;
+        }
+
+        .scanner-container {
+            position: relative;
+            margin: 1rem 0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        #qr-video {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 3px solid var(--gold);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .scanner-overlay::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 3px solid transparent;
+            border-top-color: var(--gold);
+            border-radius: 15px;
+            animation: scan 2s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .scanner-instructions {
+            margin-top: 1rem;
+            color: var(--light-navy);
+            font-size: 0.9rem;
+        }
+
+        .close-scanner {
+            margin-top: 1rem;
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* Fixed Navigation Bar */
+        .fixed-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(30, 58, 95, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            box-shadow: 0 4px 15px var(--shadow);
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .fixed-nav.visible {
+            transform: translateY(0);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.05rem;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .logout-nav-btn:hover {
+            background: white;
+            color: var(--navy);
+        }
+
+        /* Hero Section with Bridge Photo */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--light-navy) 100%);
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('Photos/Bridge Photo.PNG');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.6;
+            z-index: 1;
+            will-change: transform;
+        }
+
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(30, 58, 95, 0.4), rgba(30, 58, 95, 0.6));
+        }
+
+        /* Botanical Decorative Elements */
+        .botanical-corner {
+            position: absolute;
+            z-index: 3;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .botanical-top-left {
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 400px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><g fill="%234a7c9e"><path d="M10,10 Q40,15 50,30 L45,35 Q35,25 10,20 Z" opacity="0.7"/><path d="M20,25 Q45,30 55,45 L50,50 Q40,40 20,35 Z" opacity="0.6"/><path d="M30,40 Q50,45 60,60 L55,65 Q45,55 30,50 Z" opacity="0.7"/><path d="M15,15 Q30,40 25,60 L20,58 Q23,40 15,20 Z" opacity="0.6"/><path d="M35,30 Q50,55 45,75 L40,73 Q43,55 35,35 Z" opacity="0.7"/><path d="M55,45 Q70,70 65,90 L60,88 Q63,70 55,50 Z" opacity="0.6"/><ellipse cx="15" cy="25" rx="4" ry="8" transform="rotate(-30 15 25)" opacity="0.7"/><ellipse cx="25" cy="40" rx="5" ry="9" transform="rotate(-25 25 40)" opacity="0.6"/><ellipse cx="35" cy="55" rx="4" ry="7" transform="rotate(-35 35 55)" opacity="0.7"/><ellipse cx="45" cy="35" rx="5" ry="8" transform="rotate(-40 45 35)" opacity="0.6"/><ellipse cx="60" cy="50" rx="4" ry="9" transform="rotate(-20 60 50)" opacity="0.7"/><ellipse cx="70" cy="70" rx="5" ry="8" transform="rotate(-30 70 70)" opacity="0.6"/></g></svg>') no-repeat;
+            background-size: contain;
+        }
+
+        .botanical-bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 450px;
+            height: 450px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><g fill="%234a7c9e"><path d="M290,290 Q260,285 250,270 L255,265 Q265,275 290,280 Z" opacity="0.7"/><path d="M280,275 Q255,270 245,255 L250,250 Q260,260 280,265 Z" opacity="0.6"/><path d="M270,260 Q250,255 240,240 L245,235 Q255,245 270,250 Z" opacity="0.7"/><path d="M285,285 Q270,260 275,240 L280,242 Q277,260 285,280 Z" opacity="0.6"/><path d="M265,270 Q250,245 255,225 L260,227 Q257,245 265,265 Z" opacity="0.7"/><path d="M245,255 Q230,230 235,210 L240,212 Q237,230 245,250 Z" opacity="0.6"/><ellipse cx="285" cy="275" rx="4" ry="8" transform="rotate(30 285 275)" opacity="0.7"/><ellipse cx="275" cy="260" rx="5" ry="9" transform="rotate(25 275 260)" opacity="0.6"/><ellipse cx="265" cy="245" rx="4" ry="7" transform="rotate(35 265 245)" opacity="0.7"/><ellipse cx="255" cy="265" rx="5" ry="8" transform="rotate(40 255 265)" opacity="0.6"/><ellipse cx="240" cy="250" rx="4" ry="9" transform="rotate(20 240 250)" opacity="0.7"/><ellipse cx="230" cy="230" rx="5" ry="8" transform="rotate(30 230 230)" opacity="0.6"/></g></svg>') no-repeat;
+            background-size: contain;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            padding: 2rem;
+            animation: fadeInUp 1.5s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 1rem;
+            text-shadow: 2px 4px 8px rgba(0,0,0,0.5);
+            font-weight: bold;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .hero-content .subtitle {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            font-weight: 400;
+            animation: fadeIn 2.5s ease-out;
+        }
+
+        /* Countdown Timer */
+        .countdown-timer {
+            margin: 3rem auto 2rem auto;
+            padding: 1.5rem 2.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: inline-block;
+            animation: fadeIn 3s ease-out;
+        }
+
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .countdown-item {
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: bold;
+            font-family: 'Playfair Display', serif;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .hero-content .date {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 3rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section Styles */
+        section {
+            min-height: 100vh;
+            padding: 5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-container {
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: var(--navy);
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy));
+            border-radius: 2px;
+        }
+
+        /* About Section */
+        #about {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--white) 50%, var(--beige) 100%);
+        }
+
+        .about-content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .about-text {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px var(--shadow);
+            border: 3px solid var(--beige);
+        }
+
+        .about-text p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--light-navy);
+            margin-bottom: 1.5rem;
+        }
+
+        .wedding-details-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .detail-card {
+            background: linear-gradient(135deg, var(--white), var(--cream));
+            padding: 2rem;
+            border-radius: 20px;
+            border: 3px solid var(--beige);
+            box-shadow: 0 10px 25px var(--shadow);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .detail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px var(--shadow-lg);
+        }
+
+        .detail-card i {
+            font-size: 3rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .detail-card h3 {
+            color: var(--navy);
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .detail-card p {
+            color: var(--light-navy);
+            font-size: 1.1rem;
+        }
+
+        /* Registry Section */
+        #registry {
+            background: var(--white);
+            min-height: auto;
+            padding: 5rem 2rem;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 4rem;
+            background: linear-gradient(135deg, var(--beige), var(--cream));
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px var(--shadow);
+            border: 3px solid var(--navy);
+        }
+
+        .intro p {
+            font-size: 1.2rem;
+            color: var(--light-navy);
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Statistics Section */
+        .stats-section {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px var(--shadow);
+            border: 3px solid var(--beige);
+            margin-bottom: 4rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--beige), var(--cream));
+            border-radius: 20px;
+            border: 2px solid var(--navy);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--light-navy);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--beige);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-navy);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.7rem 1.5rem;
+            border: 2px solid var(--beige);
+            background: var(--white);
+            color: var(--navy);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--navy);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        /* Registry Grid */
+        .registry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .registry-item {
+            background: var(--white);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px var(--shadow);
+            transition: all 0.4s ease;
+            border: 3px solid var(--beige);
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        .registry-item:nth-child(1) { animation-delay: 0.1s; }
+        .registry-item:nth-child(2) { animation-delay: 0.2s; }
+        .registry-item:nth-child(3) { animation-delay: 0.3s; }
+        .registry-item:nth-child(4) { animation-delay: 0.4s; }
+        .registry-item:nth-child(5) { animation-delay: 0.5s; }
+        .registry-item:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .registry-item:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 0 25px 50px var(--shadow-lg);
+            border-color: var(--gold);
+        }
+
+        .item-image-container {
+            position: relative;
+            height: 320px;
+            overflow: hidden;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .registry-item:hover .item-image {
+            transform: scale(1.1);
+        }
+
+        .item-images-collage {
+            display: flex;
+            height: 100%;
+        }
+
+        .item-image-collage {
+            width: 50%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .item-image-collage:first-child {
+            border-right: 2px solid var(--white);
+        }
+
+        .registry-item:hover .item-image-collage {
+            transform: scale(1.05);
+        }
+
+        .item-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(30, 58, 95, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            z-index: 2;
+        }
+
+        .completion-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--success);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            z-index: 2;
+        }
+
+        .item-content {
+            padding: 2rem;
+        }
+
+        .item-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--navy);
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .item-description {
+            color: var(--light-navy);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .store-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--navy);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--beige);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .store-link:hover {
+            background: var(--navy);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .store-link i {
+            font-size: 0.8rem;
+        }
+
+        .price-info {
+            margin-bottom: 2rem;
+        }
+
+        .target-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--navy);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-container {
+            background: var(--beige);
+            border-radius: 15px;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--navy) 0%, var(--light-navy) 50%, var(--gold) 100%);
+            height: 25px;
+            border-radius: 12px;
+            transition: width 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            color: var(--navy);
+            margin-top: 0.8rem;
+            font-weight: 600;
+        }
+
+        .contribution-section {
+            border-top: 2px solid var(--beige);
+            padding-top: 1.5rem;
+        }
+
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-amount {
+            background: var(--beige);
+            border: 2px solid var(--beige);
+            padding: 0.8rem 0.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            color: var(--navy);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .quick-amount:hover, .quick-amount.selected {
+            background: var(--navy);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--beige);
+            border-radius: 15px;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .amount-input:focus {
+            outline: none;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+
+        .contribute-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--light-navy) 50%, var(--gold) 100%);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .contribute-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(30, 58, 95, 0.3);
+        }
+
+        .contribute-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .no-price-item {
+            text-align: center;
+            color: var(--light-navy);
+            font-style: italic;
+            background: linear-gradient(135deg, var(--beige), var(--cream));
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            border: 2px dashed var(--navy);
+        }
+
+        .no-price-item .heart {
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin: 0 0.5rem;
+        }
+
+        .completed {
+            border-color: var(--success) !important;
+        }
+
+        .completed .progress-bar {
+            background: linear-gradient(90deg, var(--success) 0%, #059669 100%);
+        }
+
+        /* Schedule Section */
+        #schedule {
+            background: linear-gradient(135deg, var(--beige) 0%, var(--cream) 50%, var(--white) 100%);
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--navy), var(--gold), var(--navy));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 4rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px var(--shadow);
+            border: 3px solid var(--beige);
+            margin: 0 3rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px var(--shadow-lg);
+        }
+
+        .timeline-content h3 {
+            color: var(--navy);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-time {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-content p {
+            color: var(--light-navy);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .timeline-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--navy), var(--botanical-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 10px var(--cream), 0 5px 15px var(--shadow);
+            z-index: 3;
+            position: relative;
+        }
+
+        /* Accommodation Section */
+        #accommodation {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--white) 50%, var(--beige) 100%);
+        }
+
+        .accommodation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .accommodation-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px var(--shadow);
+            border: 3px solid var(--beige);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .accommodation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px var(--shadow-lg);
+        }
+
+        .accommodation-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--botanical-blue), var(--navy));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .accommodation-card h3 {
+            color: var(--navy);
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .accommodation-card p {
+            color: var(--light-navy);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .hotel-item, .travel-info, .parking-info {
+            text-align: left;
+        }
+
+        .hotel-item h4 {
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        /* FAQ Section */
+        #faq {
+            background: var(--white);
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 3rem auto 0;
+        }
+
+        .faq-item {
+            background: var(--cream);
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border: 2px solid var(--beige);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--botanical-blue);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .faq-question {
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--cream), var(--white));
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: linear-gradient(135deg, var(--beige), var(--cream));
+        }
+
+        .faq-question h3 {
+            color: var(--navy);
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .faq-question h3 i {
+            color: var(--botanical-blue);
+        }
+
+        .faq-icon {
+            color: var(--botanical-blue);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            padding: 0 2rem;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 1.5rem 2rem;
+        }
+
+        .faq-answer p {
+            color: var(--light-navy);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .faq-answer a {
+            color: var(--botanical-blue);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .faq-answer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Photo Gallery Section */
+        #gallery {
+            background: var(--white);
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .photo-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px var(--shadow);
+            border: 3px solid var(--beige);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 400px;
+            background: linear-gradient(135deg, var(--beige), var(--cream));
+        }
+
+        .photo-item:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 0 25px 50px var(--shadow-lg);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .photo-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 400px;
+            color: var(--light-navy);
+        }
+
+        .photo-placeholder i {
+            font-size: 4rem;
+            color: var(--navy);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .photo-placeholder p {
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--light-navy) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Payment Modal */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .payment-modal-content {
+            background-color: var(--white);
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-modal-header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--light-navy) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .payment-modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .payment-modal-body {
+            padding: 2rem;
+        }
+
+        .payment-amount {
+            background: var(--beige);
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--navy);
+        }
+
+        .form-field {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--navy);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-field input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--beige);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-field input:focus {
+            outline: none;
+            border-color: var(--navy);
+        }
+
+        #card-element {
+            padding: 1rem;
+            border: 2px solid var(--beige);
+            border-radius: 10px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        #card-element.StripeElement--focus {
+            border-color: var(--navy);
+        }
+
+        #card-errors {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .payment-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .payment-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-btn.primary {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--light-navy) 100%);
+            color: white;
+        }
+
+        .payment-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 58, 95, 0.3);
+        }
+
+        .payment-btn.secondary {
+            background: var(--beige);
+            color: var(--navy);
+            border: 2px solid var(--navy);
+        }
+
+        .payment-btn.secondary:hover {
+            background: var(--navy);
+            color: white;
+        }
+
+        .payment-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            color: var(--light-navy);
+            font-size: 0.9rem;
+        }
+
+        /* Thank You Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            margin: 5% auto;
+            padding: 3rem;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .close {
+            position: absolute;
+            right: 2rem;
+            top: 2rem;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--navy);
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: var(--error);
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px var(--shadow);
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: var(--error);
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--light-navy);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .about-content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-item {
+                flex-direction: row !important;
+            }
+
+            .timeline-content {
+                margin-left: 80px;
+                margin-right: 0;
+            }
+
+            .timeline-icon {
+                left: 30px;
+                transform: translateX(0);
+            }
+
+            .registry-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .quick-amounts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .login-options {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            section {
+                padding: 3rem 1rem;
+            }
+
+            .item-content {
+                padding: 1.5rem;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 2rem;
+            }
+
+            .login-container {
+                padding: 2rem;
+            }
+        }
+
+        /* === NEW ENHANCEMENT STYLES === */
+
+        /* Hero RSVP Button */
+        .hero-rsvp-btn {
+            margin-top: 0;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--white);
+            background: var(--gold);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            z-index: 10;
+            position: relative;
+        }
+
+        .hero-rsvp-btn:hover {
+            background: var(--botanical-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(74, 124, 158, 0.5);
+        }
+
+        .hero-rsvp-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .hero-wedding-info {
+            margin-top: 2rem;
+            font-size: 1.1rem;
+            color: var(--white);
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        /* Modal Header */
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--beige);
+        }
+
+        .modal-header i {
+            font-size: 3rem;
+            color: var(--botanical-blue);
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: var(--botanical-blue);
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        /* Form Fields for Modals */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row:has(.form-field:nth-child(2)) {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .form-field {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--navy);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-field label i {
+            margin-right: 0.5rem;
+            color: var(--botanical-blue);
+            width: 20px;
+            display: inline-block;
+        }
+
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--beige);
+            border-radius: 10px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+            outline: none;
+            border-color: var(--botanical-blue);
+            box-shadow: 0 0 0 4px rgba(74, 124, 158, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Radio Group */
+        .radio-group {
+            display: grid;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            position: relative;
+            display: block;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            background: var(--cream);
+            border: 2px solid var(--beige);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .radio-label i {
+            font-size: 1.5rem;
+            color: var(--botanical-blue);
+        }
+
+        .radio-label strong {
+            display: block;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .radio-label small {
+            display: block;
+            color: var(--light-navy);
+            font-size: 0.85rem;
+        }
+
+        .radio-option:hover .radio-label {
+            border-color: var(--botanical-blue);
+            transform: translateX(5px);
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            background: var(--botanical-blue);
+            border-color: var(--botanical-blue);
+            color: white;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label i,
+        .radio-option input[type="radio"]:checked + .radio-label strong,
+        .radio-option input[type="radio"]:checked + .radio-label small {
+            color: white;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0d9668;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-large {
+            width: 100%;
+            padding: 1.25rem 2rem;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .rsvp-modal-content {
+            max-width: 700px;
+        }
+
+        /* Guest Book Entries */
+        .guest-book-entry {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--botanical-blue);
+        }
+
+        .guest-book-entry strong {
+            color: var(--navy);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .guest-book-entry p {
+            color: var(--light-navy);
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+
+        .guest-book-entry small {
+            color: var(--botanical-blue);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        #guestBookEntries {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+            padding-right: 0.5rem;
+        }
+
+        #guestBookEntries::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #guestBookEntries::-webkit-scrollbar-track {
+            background: var(--beige);
+            border-radius: 4px;
+        }
+
+        #guestBookEntries::-webkit-scrollbar-thumb {
+            background: var(--botanical-blue);
+            border-radius: 4px;
+        }
+
+        /* Mobile Bottom Navigation */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--navy);
+            padding: 0.5rem;
+            z-index: 999;
+            box-shadow: 0 -4px 15px var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-bottom-nav {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+        }
+
+        .mobile-bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .mobile-bottom-nav .nav-item:hover,
+        .mobile-bottom-nav .nav-item.active {
+            color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .mobile-bottom-nav .nav-item i {
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .mobile-bottom-nav .nav-item span {
+            font-size: 0.7rem;
+        }
+
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* Engagement Photo Section */
+        .engagement-photo-section {
+            margin-top: 3rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .engagement-photo {
+            max-width: 600px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px var(--shadow-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 5px solid var(--beige);
+        }
+
+        .engagement-photo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px var(--shadow-lg);
+        }
+
+        .photo-caption {
+            margin-top: 1.5rem;
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            color: var(--botanical-blue);
+        }
+
+        /* Timeline Dress Code */
+        .timeline-dress-code {
+            margin-top: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba(74, 124, 158, 0.1);
+            border-radius: 6px;
+            color: var(--botanical-blue);
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .timeline-dress-code i {
+            margin-right: 0.4rem;
+            font-size: 0.8rem;
+        }
+
+        /* Featured Items & Almost Funded Sections */
+        .featured-items,
+        .almost-funded {
+            margin-bottom: 3rem;
+        }
+
+        .featured-items h3,
+        .almost-funded h3 {
+            color: var(--navy);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .featured-items h3 i {
+            color: var(--gold);
+        }
+
+        .almost-funded h3 i {
+            color: var(--warning);
+        }
+
+        /* Photo Upload Button */
+        .upload-btn {
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--white);
+            background: var(--botanical-blue);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 124, 158, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-btn:hover {
+            background: var(--navy);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.4);
+        }
+
+        .upload-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-photo-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+        }
+
+        .gallery-photo-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px var(--shadow-lg);
+        }
+
+        .gallery-photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <h1>💙 Samuel & Beatrice 💙</h1>
+            <p class="serif-font" style="font-size: 1.4rem; margin-bottom: 1rem;">March 14th, 2026</p>
+            <p>Enter the wedding password to view our registry</p>
+
+            <!-- Guest Code Form -->
+            <div class="guest-code-form" id="guestCodeForm" style="display: block;">
+                <div class="form-group">
+                    <label for="guestCode"><i class="fas fa-lock"></i> Wedding Password</label>
+                    <input type="text" id="guestCode" placeholder="SamBea2026" maxlength="20">
+                </div>
+                <button class="login-btn" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Enter Wedding Registry
+                </button>
+                <div style="margin-top: 1.5rem; padding: 1rem; background: var(--cream); border-radius: 10px; border: 2px solid var(--beige);">
+                    <p style="font-size: 0.9rem; color: var(--light-navy); margin: 0;">
+                        <i class="fas fa-qrcode"></i> <strong>Scan QR Code:</strong> The password is embedded in your QR code invitation!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Wedding Website (Hidden initially) -->
+    <div id="mainWebsite" class="hidden">
+        <!-- Fixed Navigation -->
+        <nav class="fixed-nav" id="fixedNav">
+            <div class="nav-container">
+                <div class="nav-logo">Samuel & Beatrice</div>
+                <ul class="nav-links">
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#schedule">Schedule</a></li>
+                    <li><a href="#accommodation">Travel</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#registry">Registry</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                </ul>
+                <button class="logout-nav-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero-section" id="hero">
+            <div class="hero-background"></div>
+            <div class="botanical-corner botanical-top-left"></div>
+            <div class="botanical-corner botanical-bottom-right"></div>
+            <div class="hero-content">
+                <h1>Samuel & Beatrice</h1>
+                <p class="subtitle">Wedding Registry</p>
+
+                <!-- Countdown Timer -->
+                <div class="countdown-timer" id="countdownTimer">
+                    <div class="countdown-grid">
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="days">0</span>
+                            <span class="countdown-label">Days</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="hours">0</span>
+                            <span class="countdown-label">Hours</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="minutes">0</span>
+                            <span class="countdown-label">Minutes</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="seconds">0</span>
+                            <span class="countdown-label">Seconds</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RSVP Button -->
+                <button class="hero-rsvp-btn" onclick="weddingEnhancements.openRSVP()">
+                    <i class="fas fa-envelope"></i> RSVP Now
+                </button>
+            </div>
+            <div class="scroll-indicator" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about">
+            <div class="section-container">
+                <h2 class="section-title">Our Story</h2>
+                <div class="about-content-grid">
+                    <div class="about-text">
+                        <p>
+                            We are thrilled to share this special moment with you! Samuel and Beatrice are excited to begin their journey together as husband and wife, and we couldn't imagine celebrating without our closest family and friends.
+                        </p>
+                        <p>
+                            Our love story is one of adventure, laughter, and endless support for one another. From our first meeting to this moment, every step has brought us closer together.
+                        </p>
+                        <p>
+                            Thank you for being part of our lives and our celebration. Your presence means everything to us.
+                        </p>
+                    </div>
+                    <div class="wedding-details-grid">
+                        <div class="detail-card">
+                            <i class="fas fa-calendar-heart"></i>
+                            <h3>Wedding Date</h3>
+                            <p>Saturday, March 14th 2026</p>
+                        </div>
+                        <div class="detail-card">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>Venue</h3>
+                            <p>Christchurch, New Zealand</p>
+                        </div>
+                        <div class="detail-card">
+                            <i class="fas fa-heart"></i>
+                            <h3>Our Love</h3>
+                            <p>A journey that grows stronger every day</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section id="schedule">
+            <div class="section-container">
+                <h2 class="section-title">Wedding Day Schedule</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <i class="fas fa-rings-wedding"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>Ceremony</h3>
+                            <div class="timeline-time"><i class="far fa-clock"></i> 2:00 PM</div>
+                            <p>Join us as we exchange our vows and begin our journey together. The ceremony will be held in a beautiful outdoor setting.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <i class="fas fa-glass-cheers"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>Cocktail Hour</h3>
+                            <div class="timeline-time"><i class="far fa-clock"></i> 3:30 PM</div>
+                            <p>Enjoy drinks and hors d'oeuvres while we take photos. Mingle with other guests and celebrate!</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>Reception</h3>
+                            <div class="timeline-time"><i class="far fa-clock"></i> 5:00 PM</div>
+                            <p>Dinner, speeches, and celebration! We'll share our first dance and cut the cake together.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>Dancing & Party</h3>
+                            <div class="timeline-time"><i class="far fa-clock"></i> 7:00 PM</div>
+                            <p>Let's dance the night away! The dance floor will be open and the party continues late into the evening.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accommodation & Travel Section -->
+        <section id="accommodation">
+            <div class="section-container">
+                <h2 class="section-title"><i class="fas fa-hotel"></i> Accommodation & Travel</h2>
+
+                <div class="intro">
+                    <p>We want to make sure you have a comfortable stay! Here are some accommodation options near our venue.</p>
+                </div>
+
+                <div class="accommodation-grid">
+                    <div class="accommodation-card">
+                        <div class="accommodation-icon">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                        <h3>Recommended Hotels</h3>
+                        <div class="hotel-list">
+                            <div class="hotel-item">
+                                <h4>Coming Soon</h4>
+                                <p><i class="fas fa-map-marker-alt"></i> Details will be added closer to the date</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accommodation-card">
+                        <div class="accommodation-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <h3>Getting There</h3>
+                        <div class="travel-info">
+                            <p><strong><i class="fas fa-plane-arrival"></i> Nearest Airport:</strong><br>Christchurch International Airport (CHC)</p>
+                            <p><strong><i class="fas fa-car"></i> From Airport:</strong><br>Approximately 20-30 minutes drive to city center</p>
+                            <p><strong><i class="fas fa-taxi"></i> Transport Options:</strong><br>Rental cars, taxis, and rideshare services available</p>
+                        </div>
+                    </div>
+
+                    <div class="accommodation-card">
+                        <div class="accommodation-icon">
+                            <i class="fas fa-parking"></i>
+                        </div>
+                        <h3>Parking</h3>
+                        <div class="parking-info">
+                            <p><strong>Venue Parking:</strong></p>
+                            <p><i class="fas fa-info-circle"></i> TBC - Details coming soon</p>
+                            <p style="margin-top: 1rem;"><em>We recommend carpooling when possible!</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq">
+            <div class="section-container">
+                <h2 class="section-title"><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+
+                <div class="intro">
+                    <p>Got questions? We've got answers! Here's everything you need to know about our big day.</p>
+                </div>
+
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><i class="fas fa-calendar-check"></i> When is the RSVP deadline?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Please RSVP by <strong>February 14th</strong>, so we can have an accurate headcount for catering and seating arrangements.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><i class="fas fa-user-plus"></i> Can I bring a date?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>If your date doesn't have an invite, they ain't invited. We've carefully planned our guest list based on venue capacity.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><i class="fas fa-child"></i> Are kids welcome?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>As much as we love your little ones, we will not be including them in the ceremony or reception. This is an adults-only celebration. Please reach out if you have questions!</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><i class="fas fa-cloud-sun"></i> What will the weather be like?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>It is Canterbury in Summer, so expect it to be <strong>warm and potentially windy</strong>. We recommend bringing sunscreen and a light jacket for the evening!</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><i class="fas fa-parking"></i> Where should I park?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p><strong>TBC</strong> - Parking details will be updated closer to the wedding date. We'll send out information with directions and parking options.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><i class="fas fa-tshirt"></i> What should I wear?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p><strong>Semiformal.</strong> This is typically an outfit that is dressier than what you'd wear to the office, but not as dressy as a formal evening gown or tuxedo.</p>
+                            <p style="margin-top: 0.5rem;"><i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i> <strong>Ladies:</strong> We advise not wearing stilettos as the ceremony will be on grass.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><i class="fas fa-home"></i> Is the wedding indoors or outdoors?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>If the weather permits, we hope to have our <strong>ceremony outdoors</strong>, and the <strong>reception will be indoors</strong>.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><i class="fas fa-camera"></i> Is it okay to take pictures with our phones and cameras during the wedding?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p><strong>Please refrain from taking photos during the ceremony.</strong> We have a professional photographer capturing every moment.</p>
+                            <p style="margin-top: 0.5rem;"><i class="fas fa-ban" style="color: var(--error);"></i> <strong>Important:</strong> We do not want any photos posted to social media before we make a post. Let us share the first photos!</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><i class="fas fa-phone"></i> Whom should I call with questions?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>If you have any questions, please reach out to:</p>
+                            <p style="margin-top: 0.5rem;"><i class="fas fa-user"></i> <strong>Samuel:</strong> <a href="tel:02040848631">020 4084 8631</a></p>
+                            <p><i class="fas fa-user"></i> <strong>Beatrice:</strong> <a href="tel:0276561200">027 656 1200</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registry Section -->
+        <section id="registry">
+            <div class="section-container">
+                <h2 class="section-title">Wedding Registry</h2>
+
+                <div class="intro">
+                    <p>Thank you for being part of our special day! Instead of traditional gifts, we've created this registry where you can contribute towards items that will help us build our new home together. Every contribution, no matter the size, means the world to us and brings us one step closer to our dreams. 💕</p>
+                </div>
+
+                <!-- Statistics Section -->
+                <div class="stats-section">
+                    <div class="stats-grid" id="statsGrid">
+                        <!-- Stats will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Search and Filter Controls -->
+                <div class="controls">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Search for gifts...">
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-list"></i> All Items
+                        </button>
+                        <button class="filter-btn" data-filter="home">
+                            <i class="fas fa-home"></i> Home
+                        </button>
+                        <button class="filter-btn" data-filter="kitchen">
+                            <i class="fas fa-utensils"></i> Kitchen
+                        </button>
+                        <button class="filter-btn" data-filter="experiences">
+                            <i class="fas fa-heart"></i> Experiences
+                        </button>
+                        <button class="filter-btn" data-filter="completed">
+                            <i class="fas fa-check-circle"></i> Completed
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Featured Items Section -->
+                <div class="featured-items">
+                    <h3><i class="fas fa-star"></i> Featured Items</h3>
+                    <div id="featuredItemsGrid" class="registry-grid"></div>
+                </div>
+
+                <!-- Almost Funded Section -->
+                <div class="almost-funded">
+                    <h3><i class="fas fa-fire"></i> Almost There!</h3>
+                    <div id="almostFundedGrid" class="registry-grid"></div>
+                </div>
+
+                <div id="registryGrid" class="registry-grid">
+                    <!-- Items will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Photo Gallery Section -->
+        <section id="gallery">
+            <div class="section-container">
+                <h2 class="section-title">Our Photo Gallery</h2>
+
+                <!-- Photo Upload Section -->
+                <div style="text-align: center; padding: 2rem; margin-bottom: 2rem;">
+                    <button class="upload-btn" onclick="document.getElementById('photoUpload').click()">
+                        <i class="fas fa-camera"></i> Share Your Photos
+                    </button>
+                    <input type="file" id="photoUpload" style="display:none" accept="image/*" onchange="weddingEnhancements.handlePhotoUpload(event)">
+                    <p style="color: var(--botanical-blue); font-size: 0.9rem; margin-top: 0.75rem;">Help us capture memories from the celebration</p>
+                </div>
+
+                <!-- Gallery Grid -->
+                <div id="galleryPhotosGrid" class="gallery-grid">
+                    <!-- Photos will be loaded here -->
+                </div>
+
+                <div id="galleryPlaceholder" style="text-align: center; padding: 3rem 2rem;">
+                    <i class="fas fa-camera" style="font-size: 3.5rem; color: var(--botanical-blue); opacity: 0.4; margin-bottom: 1rem; display: block;"></i>
+                    <p style="color: var(--light-navy); font-size: 1rem;">
+                        No photos yet. Be the first to share!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Thank you for celebrating with us!</p>
+            <p>Samuel & Beatrice 💙</p>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 1rem;">
+                Made with love | © 2026
+            </p>
+        </footer>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="payment-modal">
+        <div class="payment-modal-content">
+            <div class="payment-modal-header">
+                <h3>🎉 Complete Your Contribution</h3>
+                <p>Secure payment powered by Stripe</p>
+            </div>
+            <div class="payment-modal-body">
+                <div class="payment-amount" id="paymentAmount">
+                    Contributing $0.00 to Item Name
+                </div>
+
+                <form id="payment-form">
+                    <div class="form-field">
+                        <label for="card-element">Card Information</label>
+                        <div id="card-element">
+                            <!-- Stripe Elements will create form elements here -->
+                        </div>
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+
+                    <div class="secure-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>Your payment information is secure and encrypted</span>
+                    </div>
+
+                    <div class="payment-buttons">
+                        <button type="button" class="payment-btn secondary" onclick="closePaymentModal()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="payment-btn primary" id="submit-payment">
+                            <i class="fas fa-heart"></i> Complete Payment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thank You Modal -->
+    <div id="thankYouModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div style="text-align: center;">
+                <i class="fas fa-heart" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                <h2 style="color: var(--navy); margin-bottom: 1rem;">Thank You! 💕</h2>
+                <p id="thankYouMessage" style="font-size: 1.1rem; color: var(--light-navy);"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- RSVP Modal -->
+    <div id="rsvpModal" class="modal">
+        <div class="modal-content rsvp-modal-content">
+            <span class="close" onclick="weddingEnhancements.closeRSVP()">&times;</span>
+            <div class="modal-header">
+                <i class="fas fa-envelope-open-text"></i>
+                <h2>RSVP to Our Wedding</h2>
+                <p class="modal-subtitle">Saturday, March 14th 2026 • Christchurch, New Zealand</p>
+            </div>
+            <form id="rsvpForm" onsubmit="weddingEnhancements.submitRSVP(event)">
+                <div class="form-row">
+                    <div class="form-field">
+                        <label><i class="fas fa-user"></i> Full Name *</label>
+                        <input type="text" required id="rsvpName" placeholder="Enter your full name">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="rsvpEmail" placeholder="your.email@example.com">
+                    </div>
+                    <div class="form-field">
+                        <label><i class="fas fa-phone"></i> Phone</label>
+                        <input type="tel" id="rsvpPhone" placeholder="021 123 4567">
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label><i class="fas fa-check-circle"></i> Will you attend? *</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="attending" required id="rsvpAttending" value="yes">
+                            <span class="radio-label">
+                                <i class="fas fa-heart"></i>
+                                <strong>Yes, I'll be there!</strong>
+                                <small>Can't wait to celebrate</small>
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="attending" value="no">
+                            <span class="radio-label">
+                                <i class="fas fa-heart-broken"></i>
+                                <strong>Sorry, I can't make it</strong>
+                                <small>Wish I could be there</small>
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="attending" value="maybe">
+                            <span class="radio-label">
+                                <i class="fas fa-question-circle"></i>
+                                <strong>Not sure yet</strong>
+                                <small>I'll let you know soon</small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label><i class="fas fa-users"></i> Number of Guests</label>
+                    <input type="number" min="1" max="10" id="rsvpGuestCount" value="1">
+                </div>
+                <div class="form-field">
+                    <label><i class="fas fa-utensils"></i> Dietary Restrictions</label>
+                    <textarea id="rsvpDietary" rows="2" placeholder="Any allergies or dietary requirements?"></textarea>
+                </div>
+                <div class="form-field">
+                    <label><i class="fas fa-comment"></i> Message to the Couple</label>
+                    <textarea id="rsvpMessage" rows="3" placeholder="Share your well wishes or any special requests..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-success btn-large">
+                    <i class="fas fa-paper-plane"></i> Submit RSVP
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Guest Book Modal -->
+    <div id="guestBookModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="weddingEnhancements.closeGuestBook()">&times;</span>
+            <h2>Guest Book</h2>
+            <div id="guestBookEntries"></div>
+            <form id="guestBookForm" onsubmit="weddingEnhancements.submitGuestBookEntry(event)">
+                <div class="form-field">
+                    <label>Your Name</label>
+                    <input type="text" required id="gbName">
+                </div>
+                <div class="form-field">
+                    <label>Your Message</label>
+                    <textarea required id="gbMessage" rows="4" placeholder="Share your wishes for the happy couple..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-paper-plane"></i> Post Message
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content" style="background: transparent; border: none; box-shadow: none; max-width: 90vw;">
+            <span class="close" onclick="weddingEnhancements.closePhotoModal()" style="color: white; font-size: 3rem;">&times;</span>
+            <img id="modalPhoto" src="" style="width: 100%; height: auto; border-radius: 10px;">
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="#hero" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#about" class="nav-item">
+            <i class="fas fa-heart"></i>
+            <span>About</span>
+        </a>
+        <a href="#registry" class="nav-item">
+            <i class="fas fa-gift"></i>
+            <span>Registry</span>
+        </a>
+        <a href="#gallery" class="nav-item">
+            <i class="fas fa-camera"></i>
+            <span>Gallery</span>
+        </a>
+    </nav>
+
+    </div>
+
+    <script>
+        // Global registry app instance
+        let registryApp;
+
+        class WeddingWebsite {
+            constructor() {
+                this.items = [];
+                this.filteredItems = [];
+                this.currentFilter = 'all';
+                this.currentSearch = '';
+                this.stripe = null;
+                this.cardElement = null;
+                this.currentPaymentData = null;
+                this.currentGuest = null;
+                this.qrScanner = null;
+                this.siteContent = {};
+
+                console.log('🎉 Wedding Website initializing...');
+                this.init();
+            }
+
+            async init() {
+                console.log('🔧 Setting up website...');
+                await this.loadSiteContent();
+                await this.checkGuestSession();
+                this.setupLoginEventListeners();
+                this.setupScrollEffects();
+                console.log('✅ Website initialization complete');
+            }
+
+            async loadSiteContent() {
+                try {
+                    console.log('📝 Loading site content from API...');
+                    const response = await fetch('/api/content');
+                    if (response.ok) {
+                        this.siteContent = await response.json();
+                        console.log('✅ Site content loaded successfully');
+                    } else {
+                        console.warn('⚠️ Failed to load site content, using defaults');
+                    }
+                } catch (error) {
+                    console.error('❌ Error loading site content:', error);
+                }
+            }
+
+            getContent(key, defaultValue = '') {
+                return this.siteContent[key]?.value || defaultValue;
+            }
+
+            setupScrollEffects() {
+                // Show/hide fixed navigation on scroll
+                let lastScroll = 0;
+                window.addEventListener('scroll', () => {
+                    const currentScroll = window.pageYOffset;
+                    const nav = document.getElementById('fixedNav');
+
+                    if (currentScroll > 100) {
+                        nav.classList.add('visible');
+                    } else {
+                        nav.classList.remove('visible');
+                    }
+
+                    lastScroll = currentScroll;
+                });
+
+                // Smooth scroll for navigation links
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            }
+
+            async checkGuestSession() {
+                // Check if guest is already logged in
+                const guestData = sessionStorage.getItem('weddingRegistryGuest');
+                if (guestData) {
+                    try {
+                        this.currentGuest = JSON.parse(guestData);
+                        console.log('👤 Found existing guest session:', this.currentGuest.name);
+                        await this.showMainWebsite();
+                    } catch (error) {
+                        console.error('Error parsing guest data:', error);
+                        this.showLoginScreen();
+                    }
+                } else {
+                    // Check if URL has password parameter (from QR code)
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const passwordFromUrl = urlParams.get('password');
+
+                    if (passwordFromUrl) {
+                        console.log('🔗 Password found in URL from QR code');
+                        await this.loginWithGuestCode(passwordFromUrl);
+                        // Clean up URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } else {
+                        this.showLoginScreen();
+                    }
+                }
+            }
+
+            showLoginScreen() {
+                console.log('🔐 Showing login screen');
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('mainWebsite').classList.add('hidden');
+                this.selectLoginOption('code');
+            }
+
+            async showMainWebsite() {
+                console.log('🏠 Showing main website');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainWebsite').classList.remove('hidden');
+
+                await this.initializeStripe();
+                await this.loadItems();
+                this.updateDynamicContent();
+                this.setupEventListeners();
+                this.updateStats();
+            }
+
+            updateDynamicContent() {
+                console.log('✏️ Updating dynamic content from database...');
+
+                // Since index.html is large and complex, we update content via innerHTML replacements
+                // This is a simple implementation - for full functionality, admin can edit content in database
+
+                // Update FAQ section
+                this.updateFAQSection();
+
+                // Update other sections as needed
+                // Note: Hero section, About, Schedule use hardcoded HTML for design integrity
+                // Admin can edit the content in database, and it will be reflected here on next load
+
+                console.log('✅ Dynamic content updated - FAQ section refreshed');
+            }
+
+            updateFAQSection() {
+                // Update FAQ items dynamically
+                const faqContainer = document.querySelector('#faq .faq-container');
+                if (!faqContainer || !this.siteContent) return;
+
+                const faqQuestions = [
+                    { q: 'faq_rsvp_q', a: 'faq_rsvp_a' },
+                    { q: 'faq_attire_q', a: 'faq_attire_a' },
+                    { q: 'faq_kids_q', a: 'faq_kids_a' },
+                    { q: 'faq_diet_q', a: 'faq_diet_a' },
+                    { q: 'faq_plus_q', a: 'faq_plus_a' },
+                    { q: 'faq_photos_q', a: 'faq_photos_a' },
+                    { q: 'faq_gifts_q', a: 'faq_gifts_a' },
+                    { q: 'faq_contact_q', a: 'faq_contact_a' },
+                    { q: 'faq_dance_q', a: 'faq_dance_a' }
+                ];
+
+                let faqHTML = '';
+                faqQuestions.forEach((faq, index) => {
+                    const question = this.getContent(faq.q, '');
+                    const answer = this.getContent(faq.a, '');
+
+                    if (question && answer) {
+                        faqHTML += `
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFAQ(this)">
+                                    <h3><i class="fas fa-${this.getFAQIcon(index)}"></i> ${question}</h3>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>${answer}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                if (faqHTML) {
+                    faqContainer.innerHTML = faqHTML;
+                }
+            }
+
+            getFAQIcon(index) {
+                const icons = ['calendar-check', 'tshirt', 'child', 'utensils', 'user-plus', 'camera', 'gift', 'envelope', 'music'];
+                return icons[index] || 'question-circle';
+            }
+
+            setupLoginEventListeners() {
+                console.log('🎛️ Setting up login event listeners');
+
+                const codeOption = document.getElementById('codeOption');
+                const qrOption = document.getElementById('qrOption');
+
+                if (codeOption) {
+                    codeOption.onclick = () => {
+                        console.log('📝 Code option clicked');
+                        this.selectLoginOption('code');
+                    };
+                }
+
+                if (qrOption) {
+                    qrOption.onclick = () => {
+                        console.log('📱 QR option clicked');
+                        this.selectLoginOption('qr');
+                    };
+                }
+
+                const loginBtn = document.getElementById('loginBtn');
+                if (loginBtn) {
+                    loginBtn.onclick = async () => {
+                        console.log('🔑 Login button clicked');
+                        const guestCode = document.getElementById('guestCode').value.trim().toUpperCase();
+                        if (guestCode) {
+                            await this.loginWithGuestCode(guestCode);
+                        } else {
+                            this.showToast('Please enter your guest code', 'error');
+                        }
+                    };
+                }
+
+                const guestCodeInput = document.getElementById('guestCode');
+                if (guestCodeInput) {
+                    guestCodeInput.addEventListener('keypress', async (e) => {
+                        if (e.key === 'Enter') {
+                            console.log('⌨️ Enter key pressed');
+                            const guestCode = e.target.value.trim().toUpperCase();
+                            if (guestCode) {
+                                await this.loginWithGuestCode(guestCode);
+                            }
+                        }
+                    });
+                }
+
+                const closeScanner = document.getElementById('closeScanner');
+                if (closeScanner) {
+                    closeScanner.onclick = () => {
+                        console.log('❌ Closing QR scanner');
+                        this.stopQRScanner();
+                    };
+                }
+
+                const logoutBtn = document.getElementById('logoutBtn');
+                if (logoutBtn) {
+                    logoutBtn.onclick = () => {
+                        console.log('🚪 Logout clicked');
+                        this.logout();
+                    };
+                }
+            }
+
+            selectLoginOption(option) {
+                console.log(`🎯 Selecting login option: ${option}`);
+
+                // Simplified for universal password - just focus the input
+                if (option === 'code') {
+                    setTimeout(() => {
+                        const input = document.getElementById('guestCode');
+                        if (input) input.focus();
+                    }, 100);
+                }
+            }
+
+            async startQRScanner() {
+                try {
+                    console.log('📱 Starting QR scanner...');
+                    const video = document.getElementById('qr-video');
+
+                    if (typeof QrScanner !== 'undefined') {
+                        this.qrScanner = new QrScanner(
+                            video,
+                            result => this.handleQRResult(result),
+                            {
+                                onDecodeError: error => {},
+                                highlightScanRegion: true,
+                                highlightCodeOutline: true,
+                            }
+                        );
+
+                        await this.qrScanner.start();
+                        console.log('✅ QR Scanner started successfully');
+                    } else {
+                        throw new Error('QR Scanner library not loaded');
+                    }
+                } catch (error) {
+                    console.error('❌ Error starting QR scanner:', error);
+                    this.showToast('Camera access required for QR scanning. Please use guest code instead.', 'error');
+                    this.selectLoginOption('code');
+                }
+            }
+
+            stopQRScanner() {
+                if (this.qrScanner) {
+                    this.qrScanner.stop();
+                    this.qrScanner.destroy();
+                    this.qrScanner = null;
+                    console.log('📱 QR Scanner stopped');
+                }
+            }
+
+            async handleQRResult(result) {
+                console.log('📱 QR Code detected:', result.data);
+                this.stopQRScanner();
+
+                let guestCode = null;
+
+                try {
+                    const url = new URL(result.data);
+                    const pathMatch = url.pathname.match(/\/guest\/([A-Z0-9]{6,12})/i);
+                    if (pathMatch) {
+                        guestCode = pathMatch[1];
+                    }
+                } catch (error) {
+                    if (/^[A-Z0-9]{6,12}$/i.test(result.data)) {
+                        guestCode = result.data;
+                    }
+                }
+
+                if (guestCode) {
+                    await this.loginWithGuestCode(guestCode);
+                } else {
+                    this.showToast('Invalid QR code. Please try again or use your guest code.', 'error');
+                    this.selectLoginOption('code');
+                }
+            }
+
+            async loginWithGuestCode(guestCode) {
+                try {
+                    console.log(`👤 Attempting login with guest code: ${guestCode}`);
+
+                    const loginBtn = document.getElementById('loginBtn');
+                    const originalText = loginBtn.innerHTML;
+                    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+                    loginBtn.disabled = true;
+
+                    const response = await fetch('/api/guest/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ guestCode })
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+
+                        if (result.success && result.guest) {
+                            this.currentGuest = result.guest;
+
+                            sessionStorage.setItem('weddingRegistryGuest', JSON.stringify(this.currentGuest));
+
+                            history.pushState({}, '', '/');
+
+                            console.log(`✅ Guest logged in successfully: ${this.currentGuest.name}`);
+                            await this.showMainWebsite();
+                        } else {
+                            throw new Error(result.error || 'Invalid response format');
+                        }
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Login failed');
+                    }
+                } catch (error) {
+                    console.error('❌ Login error:', error);
+                    this.showToast(error.message || 'Invalid guest code. Please try again.', 'error');
+
+                    const loginBtn = document.getElementById('loginBtn');
+                    if (loginBtn) {
+                        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access Wedding';
+                        loginBtn.disabled = false;
+                    }
+
+                    const guestCodeInput = document.getElementById('guestCode');
+                    if (guestCodeInput) guestCodeInput.value = '';
+                    this.selectLoginOption('code');
+                }
+            }
+
+            logout() {
+                console.log('🚪 Logging out...');
+                sessionStorage.removeItem('weddingRegistryGuest');
+                this.currentGuest = null;
+
+                history.pushState({}, '', '/');
+
+                this.showLoginScreen();
+
+                const guestCodeInput = document.getElementById('guestCode');
+                if (guestCodeInput) guestCodeInput.value = '';
+
+                document.querySelectorAll('.login-option').forEach(el => el.classList.remove('active'));
+                document.getElementById('guestCodeForm').classList.remove('active');
+                document.getElementById('qrScanner').classList.remove('active');
+                this.stopQRScanner();
+            }
+
+            async initializeStripe() {
+                try {
+                    console.log('💳 Initializing Stripe...');
+                    const response = await fetch('/api/stripe-config');
+
+                    if (!response.ok) {
+                        throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                    }
+
+                    const config = await response.json();
+
+                    if (config.publishableKey) {
+                        this.stripe = Stripe(config.publishableKey);
+                        this.setupStripeElements();
+                        console.log('✅ Stripe initialized successfully');
+                    } else {
+                        throw new Error('No publishable key found in config');
+                    }
+                } catch (error) {
+                    console.error('❌ Failed to initialize Stripe:', error);
+                    this.showToast('Payment system temporarily unavailable', 'error');
+                }
+            }
+
+            setupStripeElements() {
+                if (!this.stripe) return;
+
+                const elements = this.stripe.elements();
+
+                this.cardElement = elements.create('card', {
+                    style: {
+                        base: {
+                            fontSize: '16px',
+                            color: '#1e3a5f',
+                            '::placeholder': {
+                                color: '#9ca3af',
+                            },
+                        },
+                        invalid: {
+                            color: '#ef4444',
+                            iconColor: '#ef4444'
+                        }
+                    },
+                    hidePostalCode: false
+                });
+
+                this.cardElement.on('change', ({error}) => {
+                    const displayError = document.getElementById('card-errors');
+                    if (displayError) {
+                        if (error) {
+                            displayError.textContent = error.message;
+                        } else {
+                            displayError.textContent = '';
+                        }
+                    }
+                });
+            }
+
+            async loadItems() {
+                try {
+                    console.log('📦 Loading registry items...');
+                    const response = await fetch('/api/items');
+                    this.items = await response.json();
+                    this.filteredItems = [...this.items];
+                    this.renderItems();
+                    console.log(`✅ Loaded ${this.items.length} registry items`);
+                } catch (error) {
+                    console.error('❌ Error loading items:', error);
+                    this.showToast('Error loading registry items', 'error');
+                }
+            }
+
+            renderItems() {
+                const grid = document.getElementById('registryGrid');
+
+                if (this.filteredItems.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h3>No items found</h3>
+                            <p>Try adjusting your search or filter criteria</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = '';
+                this.filteredItems.forEach((item, index) => {
+                    const itemElement = this.createItemElement(item, index);
+                    grid.appendChild(itemElement);
+                });
+            }
+
+            createItemElement(item, index) {
+                const itemDiv = document.createElement('div');
+                const progressPercentage = item.hasTarget ? Math.min((item.currentAmount / item.targetAmount) * 100, 100) : 0;
+                const isCompleted = item.hasTarget && item.currentAmount >= item.targetAmount;
+
+                itemDiv.className = `registry-item ${isCompleted ? 'completed' : ''}`;
+                itemDiv.style.animationDelay = `${index * 0.1}s`;
+
+                const categoryIcons = {
+                    kitchen: '🍳',
+                    home: '🏠',
+                    experiences: '💕',
+                    other: '📦'
+                };
+
+                let imageHtml = '';
+                const primaryImage = item.imageUrl || item.image_url;
+                const secondImage = item.imageUrl2 || item.imageUrlFaded || item.image_url_faded;
+
+                if (primaryImage && secondImage) {
+                    imageHtml = `
+                        <div class="item-images-collage">
+                            <img src="${primaryImage}" alt="${item.name}" class="item-image-collage" loading="lazy">
+                            <img src="${secondImage}" alt="${item.name}" class="item-image-collage" loading="lazy">
+                        </div>
+                    `;
+                } else if (primaryImage) {
+                    imageHtml = `<img src="${primaryImage}" alt="${item.name}" class="item-image" loading="lazy">`;
+                } else {
+                    imageHtml = `
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: var(--cream); color: var(--light-navy);">
+                            <i class="fas fa-image" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    `;
+                }
+
+                let storeLinkHtml = '';
+                if (item.storeLink && item.storeLink.trim()) {
+                    try {
+                        const url = new URL(item.storeLink);
+                        const hostname = url.hostname.replace('www.', '');
+                        storeLinkHtml = `
+                            <a href="${item.storeLink}" target="_blank" rel="noopener noreferrer" class="store-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                View on ${hostname}
+                            </a>
+                        `;
+                    } catch (e) {
+                        storeLinkHtml = `
+                            <a href="${item.storeLink}" target="_blank" rel="noopener noreferrer" class="store-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                View Store Link
+                            </a>
+                        `;
+                    }
+                }
+
+                itemDiv.innerHTML = `
+                    <div class="item-image-container">
+                        ${imageHtml}
+                        <div class="item-category">
+                            ${categoryIcons[item.category] || '📦'} ${item.category.charAt(0).toUpperCase() + item.category.slice(1)}
+                        </div>
+                        ${isCompleted ? `
+                            <div class="completion-badge">
+                                <i class="fas fa-check"></i> Complete
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="item-content">
+                        <div class="item-title">${item.name}</div>
+                        <div class="item-description">${item.description}</div>
+
+                        ${storeLinkHtml}
+
+                        ${item.hasTarget ? `
+                            <div class="price-info">
+                                <div class="target-price">
+                                    <i class="fas fa-bullseye"></i>
+                                    Goal: $${item.targetAmount.toFixed(2)}
+                                </div>
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: ${progressPercentage}%"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span><i class="fas fa-dollar-sign"></i> $${item.currentAmount.toFixed(2)} raised</span>
+                                    <span><i class="fas fa-percentage"></i> ${progressPercentage.toFixed(1)}%</span>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="no-price-item">
+                                <span class="heart">💕</span>
+                                Any amount appreciated
+                                <span class="heart">💕</span><br>
+                                <strong>Current total: $${item.currentAmount.toFixed(2)}</strong>
+                            </div>
+                        `}
+
+                        ${!isCompleted ? `
+                            <div class="contribution-section">
+                                <div class="quick-amounts">
+                                    <button class="quick-amount" data-amount="25" data-item-id="${item.id}">$25</button>
+                                    <button class="quick-amount" data-amount="50" data-item-id="${item.id}">$50</button>
+                                    <button class="quick-amount" data-amount="100" data-item-id="${item.id}">$100</button>
+                                    <button class="quick-amount" data-amount="200" data-item-id="${item.id}">$200</button>
+                                </div>
+                                <input type="number" class="amount-input" placeholder="Enter custom amount ($)" min="1" step="0.01" data-item-id="${item.id}">
+                                <button class="contribute-btn" data-item-id="${item.id}">
+                                    <i class="fas fa-heart"></i> Contribute Now
+                                </button>
+                            </div>
+                        ` : `
+                            <div class="contribution-section">
+                                <div style="text-align: center; padding: 2rem; background: var(--success); color: white; border-radius: 15px;">
+                                    <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                                    <div style="font-size: 1.2rem; font-weight: bold;">Goal Reached!</div>
+                                    <div>Thank you to everyone who contributed! 💕</div>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                `;
+
+                return itemDiv;
+            }
+
+            setupEventListeners() {
+                console.log('🎛️ Setting up event listeners');
+
+                // Quick amount buttons
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('quick-amount')) {
+                        const amount = e.target.dataset.amount;
+                        const itemId = e.target.dataset.itemId;
+                        const input = document.querySelector(`input[data-item-id="${itemId}"]`);
+                        if (input) {
+                            input.value = amount;
+
+                            document.querySelectorAll(`[data-item-id="${itemId}"].quick-amount`).forEach(btn => {
+                                btn.classList.remove('selected');
+                            });
+                            e.target.classList.add('selected');
+                        }
+                    }
+                });
+
+                // Contribute buttons
+                document.addEventListener('click', async (e) => {
+                    if (e.target.classList.contains('contribute-btn') || e.target.closest('.contribute-btn')) {
+                        const button = e.target.classList.contains('contribute-btn') ? e.target : e.target.closest('.contribute-btn');
+                        const itemId = button.dataset.itemId;
+                        const input = document.querySelector(`input[data-item-id="${itemId}"]`);
+                        const amount = parseFloat(input.value);
+
+                        if (!amount || amount <= 0) {
+                            this.showToast('Please enter a valid amount', 'error');
+                            return;
+                        }
+
+                        await this.initiatePayment(itemId, amount);
+                    }
+                });
+
+                // Search functionality
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        this.currentSearch = e.target.value.toLowerCase();
+                        this.filterItems();
+                    });
+                }
+
+                // Filter buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentFilter = e.target.dataset.filter;
+                        this.filterItems();
+                    });
+                });
+
+                // Payment form
+                const paymentForm = document.getElementById('payment-form');
+                if (paymentForm) {
+                    paymentForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        await this.processStripePayment();
+                    });
+                }
+
+                // Modal functionality
+                const modal = document.getElementById('thankYouModal');
+                const closeBtn = document.querySelector('.close');
+
+                if (closeBtn) closeBtn.onclick = () => modal.style.display = 'none';
+
+                window.onclick = (e) => {
+                    if (e.target === modal) modal.style.display = 'none';
+                    if (e.target.id === 'paymentModal') this.closePaymentModal();
+                };
+            }
+
+            filterItems() {
+                this.filteredItems = this.items.filter(item => {
+                    const matchesSearch = !this.currentSearch ||
+                        item.name.toLowerCase().includes(this.currentSearch) ||
+                        item.description.toLowerCase().includes(this.currentSearch) ||
+                        item.category.toLowerCase().includes(this.currentSearch);
+
+                    const matchesFilter = this.currentFilter === 'all' ||
+                        item.category === this.currentFilter ||
+                        (this.currentFilter === 'completed' && item.hasTarget && item.currentAmount >= item.targetAmount);
+
+                    return matchesSearch && matchesFilter;
+                });
+
+                this.renderItems();
+            }
+
+            async updateStats() {
+                try {
+                    const response = await fetch('/api/statistics');
+                    const stats = await response.json();
+
+                    const statsGrid = document.getElementById('statsGrid');
+                    if (statsGrid) {
+                        statsGrid.innerHTML = `
+                            <div class="stat-card">
+                                <div class="stat-number">$${stats.totalRaised.toFixed(0)}</div>
+                                <div class="stat-label">Total Raised</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">${stats.totalContributions}</div>
+                                <div class="stat-label">Contributions</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">${stats.completedItems}</div>
+                                <div class="stat-label">Items Complete</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">${stats.progressPercentage.toFixed(0)}%</div>
+                                <div class="stat-label">Overall Progress</div>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+            }
+
+            async initiatePayment(itemId, amount) {
+                if (!this.currentGuest) {
+                    this.showToast('Please log in to make a contribution', 'error');
+                    return;
+                }
+
+                const item = this.items.find(i => i.id == itemId);
+                if (!item) {
+                    this.showToast('Item not found', 'error');
+                    return;
+                }
+
+                if (item.hasTarget && (item.currentAmount + amount) > item.targetAmount) {
+                    const remaining = item.targetAmount - item.currentAmount;
+                    if (remaining <= 0) {
+                        this.showToast('This item has already reached its goal!', 'error');
+                        return;
+                    }
+
+                    const proceed = confirm(`This contribution would exceed the goal by $${(amount - remaining).toFixed(2)}. Would you like to contribute exactly $${remaining.toFixed(2)} instead?`);
+                    if (proceed) {
+                        amount = remaining;
+                    } else {
+                        return;
+                    }
+                }
+
+                this.currentPaymentData = { itemId, amount, item };
+                this.showPaymentModal(amount, item.name);
+            }
+
+            showPaymentModal(amount, itemName) {
+                const modal = document.getElementById('paymentModal');
+                const amountDisplay = document.getElementById('paymentAmount');
+
+                if (amountDisplay) {
+                    amountDisplay.textContent = `Contributing $${amount.toFixed(2)} to ${itemName}`;
+                }
+
+                if (this.cardElement) {
+                    this.cardElement.mount('#card-element');
+                }
+
+                modal.style.display = 'block';
+            }
+
+            closePaymentModal() {
+                const modal = document.getElementById('paymentModal');
+                modal.style.display = 'none';
+
+                if (this.cardElement) {
+                    this.cardElement.unmount();
+                }
+            }
+
+            async processStripePayment() {
+                console.log('💳 Processing payment...');
+                this.showToast('Payment processing not fully implemented in this version', 'warning');
+            }
+
+            showToast(message, type = 'success') {
+                console.log(`📢 Toast: ${type.toUpperCase()} - ${message}`);
+
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                    ${message}
+                `;
+
+                document.body.appendChild(toast);
+
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            document.body.removeChild(toast);
+                        }
+                    }, 300);
+                }, 4000);
+            }
+        }
+
+        // Global function for closing payment modal
+        function closePaymentModal() {
+            if (registryApp) {
+                registryApp.closePaymentModal();
+            }
+        }
+
+        // Initialize the website when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 DOM loaded, initializing wedding website...');
+            registryApp = new WeddingWebsite();
+        });
+
+        // Also initialize if DOM is already loaded
+        if (document.readyState === 'loading') {
+            // DOM is still loading, wait for DOMContentLoaded
+        } else {
+            // DOM is already loaded
+            console.log('🚀 DOM already loaded, initializing wedding website...');
+            registryApp = new WeddingWebsite();
+        }
+
+        // FAQ Toggle Function
+        function toggleFAQ(element) {
+            const faqItem = element.closest('.faq-item');
+            const isActive = faqItem.classList.contains('active');
+
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Open clicked item if it wasn't already open
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

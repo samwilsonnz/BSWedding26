@@ -1,0 +1,27 @@
+{
+  "guests": [
+    {
+      "id": "1751435880803",
+      "name": "Samuel",
+      "email": "samwilsonnz1@gmail.com",
+      "phone": "02040848631",
+      "guestCode": "9IC5A7",
+      "invitationType": "couple",
+      "guestCount": 2,
+      "dietaryRestrictions": "none",
+      "notes": "",
+      "rsvpStatus": "pending",
+      "hasAccessed": true,
+      "totalContributed": 0,
+      "contributions": [],
+      "dateAdded": "2025-07-02T05:58:00.804Z",
+      "lastAccess": "2025-09-08T09:14:10.817Z"
+    }
+  ],
+  "statistics": {
+    "totalGuests": 1,
+    "guestsWithAccess": 0,
+    "totalContributions": 0,
+    "lastUpdated": "2025-07-02T05:58:00.804Z"
+  }
+}
