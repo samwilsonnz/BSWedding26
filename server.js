@@ -323,7 +323,7 @@ app.post('/api/guest/login', async (req, res) => {
         }
 
         // Universal wedding password (case-insensitive)
-        const WEDDING_PASSWORD = 'SamBea2026';
+        const WEDDING_PASSWORD = 'Beatrice&Samuel2026';
 
         if (guestCode.trim().toLowerCase() !== WEDDING_PASSWORD.toLowerCase()) {
             return res.status(401).json({
