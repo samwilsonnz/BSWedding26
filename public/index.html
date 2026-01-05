@@ -5896,27 +5896,16 @@
                             // Show RSVP form
                             this.showRsvpForm(result.guest, result.familyMembers);
                         }
-                    } else if (response.status === 500) {
-                        // Guest list not set up yet - allow entry with name
-                        console.log('⚠️ Guest list not available, allowing entry');
-                        this.pendingGuest = { id: 0, name: name, familyGroup: 'guest', hasRsvped: false };
-                        this.familyMembers = [];
-                        this.showRsvpForm(this.pendingGuest, []);
                     } else {
-                        throw new Error(result.error || 'Name not found');
+                        // Name not found - deny access
+                        throw new Error(result.error || 'Sorry, your name was not found on the guest list. Please check the spelling or contact Sam & Beatrice.');
                     }
                 } catch (error) {
                     console.error('❌ Lookup error:', error);
-                    // If network error, allow fallback entry
-                    if (error.message.includes('fetch')) {
-                        this.pendingGuest = { id: 0, name: name, familyGroup: 'guest', hasRsvped: false };
-                        this.showRsvpForm(this.pendingGuest, []);
-                    } else {
-                        errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${error.message}`;
-                        errorDiv.style.display = 'block';
-                        findBtn.innerHTML = '<i class="fas fa-search"></i> Find My Name';
-                        findBtn.disabled = false;
-                    }
+                    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${error.message}`;
+                    errorDiv.style.display = 'block';
+                    findBtn.innerHTML = '<i class="fas fa-search"></i> Find My Name';
+                    findBtn.disabled = false;
                 }
             }
 
