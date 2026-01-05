@@ -2957,26 +2957,6 @@
             outline-offset: 2px !important;
         }
 
-        /* Skip to content link for accessibility */
-        .skip-link {
-            position: absolute;
-            top: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--navy);
-            color: white;
-            padding: 12px 24px;
-            z-index: 10000;
-            transition: top 0.3s ease;
-            border-radius: 0 0 8px 8px;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .skip-link:focus {
-            top: 0;
-        }
-
         /* Screen reader only text */
         .sr-only {
             position: absolute;
@@ -4509,9 +4489,6 @@
 <body>
     <!-- Scroll progress indicator -->
     <div class="nav-progress"></div>
-
-    <!-- Skip to main content link for accessibility -->
-    <a href="#registry" class="skip-link">Skip to main content</a>
 
     <!-- ARIA Live Region for screen reader announcements -->
     <div id="aria-live-region" aria-live="polite" aria-atomic="true" role="status"></div>
