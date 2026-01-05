@@ -1,0 +1,2 @@
+ALTER TABLE contributions ADD COLUMN IF NOT EXISTS thank_you_sent BOOLEAN DEFAULT FALSE;
+ALTER TABLE contributions ADD COLUMN IF NOT EXISTS thank_you_sent_at TIMESTAMP;

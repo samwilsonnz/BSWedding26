@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Sam & Beatrice Wedding</title>
+    <style>
+        :root {
+            --navy: #1e3a5f;
+            --gold: #d4af37;
+            --cream: #faf8f5;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, #fff 50%, var(--cream) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .offline-container {
+            text-align: center;
+            max-width: 400px;
+        }
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        h1 {
+            color: var(--navy);
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #5a7a9a;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .retry-btn {
+            background: linear-gradient(135deg, var(--navy) 0%, #2a4a70 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.3);
+        }
+        .hearts {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📡</div>
+        <h1>You're Offline</h1>
+        <p>It looks like you've lost your internet connection. Please check your connection and try again to view Sam & Beatrice's wedding registry.</p>
+        <button class="retry-btn" onclick="window.location.reload()">
+            Try Again
+        </button>
+        <div class="hearts">💙 S & B 💙</div>
+    </div>
+</body>
+</html>

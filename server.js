@@ -1,13 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet');
+const { RateLimiterMemory } = require('rate-limiter-flexible');
 const { createClient } = require('@supabase/supabase-js');
+const { Resend } = require('resend');
 
 // Load environment variables (works locally with .env file, Railway provides them directly)
 require('dotenv').config();
 
 // Validate required environment variables
-const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'STRIPE_SECRET_KEY', 'ADMIN_CODE'];
+const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'STRIPE_SECRET_KEY', 'ADMIN_CODE', 'WEDDING_PASSWORD'];
 const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
 if (missingEnvVars.length > 0) {
   console.error('❌ Missing required environment variables:', missingEnvVars.join(', '));
@@ -31,6 +34,246 @@ const PORT = process.env.PORT || 3000;
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Resend email setup (optional - for email notifications)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+// SSE clients for live admin feed
+const sseClients = new Set();
+
+// Broadcast event to all connected SSE clients
+function broadcastEvent(eventType, data) {
+    const message = `event: ${eventType}\ndata: ${JSON.stringify(data)}\n\n`;
+    sseClients.forEach(client => {
+        client.write(message);
+    });
+}
+
+// Email notification helper
+async function sendContributionNotification(contribution) {
+    if (!resend || !process.env.NOTIFICATION_EMAIL) {
+        console.log('📧 Email notifications not configured (set RESEND_API_KEY and NOTIFICATION_EMAIL)');
+        return;
+    }
+
+    try {
+        const { guestName, itemName, amount, message } = contribution;
+
+        await resend.emails.send({
+            from: 'Wedding Registry <onboarding@resend.dev>',  // Use your verified domain in production
+            to: process.env.NOTIFICATION_EMAIL,
+            subject: `💝 New Contribution: $${amount.toFixed(2)} from ${guestName}`,
+            html: `
+                <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <div style="background: linear-gradient(135deg, #1e3a5f, #2c5282); padding: 30px; border-radius: 15px 15px 0 0; text-align: center;">
+                        <h1 style="color: #d4af37; margin: 0; font-family: cursive;">New Contribution!</h1>
+                    </div>
+                    <div style="background: #faf8f5; padding: 30px; border-radius: 0 0 15px 15px;">
+                        <p style="color: #1e3a5f; font-size: 18px; margin-bottom: 20px;">
+                            <strong>${guestName}</strong> just contributed to your registry!
+                        </p>
+                        <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #d4af37; margin-bottom: 20px;">
+                            <p style="margin: 0 0 10px 0;"><strong>Item:</strong> ${itemName}</p>
+                            <p style="margin: 0 0 10px 0;"><strong>Amount:</strong> <span style="color: #28a745; font-size: 24px;">$${amount.toFixed(2)}</span></p>
+                            ${message ? `<p style="margin: 0; font-style: italic; color: #4a5568;">"${message}"</p>` : ''}
+                        </div>
+                        <p style="color: #718096; font-size: 14px; margin: 0;">
+                            View all contributions in your <a href="${process.env.SITE_URL || 'https://bswedding26.com'}/admin" style="color: #1e3a5f;">admin dashboard</a>.
+                        </p>
+                    </div>
+                </div>
+            `
+        });
+
+        console.log('📧 Contribution notification email sent successfully');
+    } catch (error) {
+        console.error('📧 Failed to send email notification:', error);
+    }
+}
+
+// RSVP email notification helper
+async function sendRsvpNotification(rsvp) {
+    if (!resend || !process.env.NOTIFICATION_EMAIL) {
+        console.log('📧 Email notifications not configured (set RESEND_API_KEY and NOTIFICATION_EMAIL)');
+        return;
+    }
+
+    try {
+        const { name, email, attending, guestCount, dietary, message } = rsvp;
+        const attendingText = attending === 'yes' ? 'Attending' : attending === 'no' ? 'Not Attending' : 'Maybe';
+        const attendingColor = attending === 'yes' ? '#28a745' : attending === 'no' ? '#dc3545' : '#ffc107';
+
+        await resend.emails.send({
+            from: 'Wedding Registry <onboarding@resend.dev>',
+            to: process.env.NOTIFICATION_EMAIL,
+            subject: `📋 New RSVP: ${name} - ${attendingText}`,
+            html: `
+                <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <div style="background: linear-gradient(135deg, #1e3a5f, #2c5282); padding: 30px; border-radius: 15px 15px 0 0; text-align: center;">
+                        <h1 style="color: #d4af37; margin: 0; font-family: cursive;">New RSVP!</h1>
+                    </div>
+                    <div style="background: #faf8f5; padding: 30px; border-radius: 0 0 15px 15px;">
+                        <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid ${attendingColor}; margin-bottom: 20px;">
+                            <p style="margin: 0 0 15px 0; font-size: 20px;"><strong>${name}</strong></p>
+                            <p style="margin: 0 0 10px 0;">
+                                <strong>Status:</strong>
+                                <span style="color: ${attendingColor}; font-weight: bold; font-size: 18px;">${attendingText}</span>
+                            </p>
+                            ${attending === 'yes' ? `<p style="margin: 0 0 10px 0;"><strong>Guests:</strong> ${guestCount}</p>` : ''}
+                            ${email ? `<p style="margin: 0 0 10px 0;"><strong>Email:</strong> ${email}</p>` : ''}
+                            ${dietary ? `<p style="margin: 0 0 10px 0;"><strong>Dietary:</strong> ${dietary}</p>` : ''}
+                            ${message ? `<p style="margin: 0; font-style: italic; color: #4a5568; padding-top: 10px; border-top: 1px solid #eee;">"${message}"</p>` : ''}
+                        </div>
+                        <p style="color: #718096; font-size: 14px; margin: 0;">
+                            View all RSVPs in your <a href="${process.env.SITE_URL || 'https://bswedding26.com'}/admin" style="color: #1e3a5f;">admin dashboard</a>.
+                        </p>
+                    </div>
+                </div>
+            `
+        });
+
+        console.log('📧 RSVP notification email sent successfully');
+    } catch (error) {
+        console.error('📧 Failed to send RSVP email notification:', error);
+    }
+}
+
+// Send RSVP confirmation email to guest (with website link and password)
+async function sendGuestRsvpConfirmation(guest) {
+    if (!resend) {
+        console.log('📧 Resend not configured - skipping guest confirmation email');
+        return;
+    }
+
+    if (!guest.email) {
+        console.log('📧 No email provided for guest - skipping confirmation');
+        return;
+    }
+
+    try {
+        const { name, email, attending } = guest;
+        const attendingText = attending === 'yes' ? "We can't wait to see you" :
+                             attending === 'no' ? "We're sorry you can't make it" :
+                             "Thanks for letting us know you're still deciding";
+
+        const siteUrl = process.env.SITE_URL || 'https://bswedding26.com';
+        const password = process.env.WEDDING_PASSWORD || 'Beatrice&Samuel2026';
+
+        await resend.emails.send({
+            from: 'Sam & Beatrice Wedding <onboarding@resend.dev>',
+            to: email,
+            subject: `RSVP Confirmed - Sam & Beatrice's Wedding`,
+            html: `
+                <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f5f5f5;">
+                    <div style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                        <img src="${siteUrl}/Photos/Bridge%20Photo.PNG" alt="Sam & Beatrice" style="width: 100%; height: 280px; object-fit: cover; display: block;">
+                        <div style="background: linear-gradient(135deg, #1e3a5f, #2c5282); padding: 25px; text-align: center;">
+                            <h1 style="color: #d4af37; margin: 0; font-size: 26px;">Sam & Beatrice</h1>
+                            <p style="color: white; margin: 10px 0 0 0; font-size: 15px;">March 14th, 2026</p>
+                        </div>
+                        <div style="padding: 30px;">
+                            <h2 style="color: #1e3a5f; margin: 0 0 15px 0;">Hi ${name.split(' ')[0]}!</h2>
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
+                                Your RSVP has been received. ${attendingText}!
+                            </p>
+
+                            <div style="background: #f8fafc; padding: 20px; border-radius: 10px; border-left: 4px solid #d4af37; margin-bottom: 25px;">
+                                <h3 style="color: #1e3a5f; margin: 0 0 12px 0; font-size: 16px;">Wedding Registry Access</h3>
+                                <p style="color: #4a5568; margin: 0 0 10px 0; font-size: 14px;">
+                                    <strong>Website:</strong>
+                                    <a href="${siteUrl}" style="color: #1e3a5f;">${siteUrl}</a>
+                                </p>
+                                <p style="color: #4a5568; margin: 0; font-size: 14px;">
+                                    <strong>Password:</strong> <code style="background: #e2e8f0; padding: 3px 8px; border-radius: 4px;">${password}</code>
+                                </p>
+                            </div>
+
+                            <div style="text-align: center;">
+                                <a href="${siteUrl}" style="display: inline-block; background: #1e3a5f; color: white; padding: 14px 35px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 15px;">
+                                    View Registry
+                                </a>
+                            </div>
+
+                            <p style="color: #a0aec0; font-size: 13px; text-align: center; margin: 25px 0 0 0;">
+                                We can't wait to celebrate with you!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `
+        });
+
+        console.log(`📧 Guest confirmation email sent to ${email}`);
+    } catch (error) {
+        console.error('📧 Failed to send guest confirmation email:', error);
+    }
+}
+
+// Security middleware
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: [
+                "'self'",
+                "'unsafe-inline'",
+                "'unsafe-eval'",
+                "https://js.stripe.com",
+                "https://cdn.jsdelivr.net",
+                "https://cdnjs.cloudflare.com",
+                "https://unpkg.com"
+            ],
+            scriptSrcAttr: ["'unsafe-inline'"],
+            styleSrc: [
+                "'self'",
+                "'unsafe-inline'",
+                "https://fonts.googleapis.com",
+                "https://cdnjs.cloudflare.com"
+            ],
+            fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+            imgSrc: ["'self'", "data:", "blob:", "https:"],
+            frameSrc: ["'self'", "https://js.stripe.com"],
+            connectSrc: [
+                "'self'",
+                "https://api.stripe.com",
+                "https://js.stripe.com",
+                "https://fonts.googleapis.com",
+                "https://fonts.gstatic.com",
+                "https://cdnjs.cloudflare.com",
+                "https://cdn.jsdelivr.net",
+                "https://unpkg.com",
+                process.env.SUPABASE_URL
+            ].filter(Boolean)
+        }
+    },
+    crossOriginEmbedderPolicy: false
+}));
+
+// Rate limiting configuration
+const rateLimiterGeneral = new RateLimiterMemory({
+    points: 100, // requests
+    duration: 60, // per 60 seconds
+});
+
+const rateLimiterAuth = new RateLimiterMemory({
+    points: 5, // 5 login attempts
+    duration: 60 * 15, // per 15 minutes
+});
+
+const rateLimiterPayment = new RateLimiterMemory({
+    points: 10, // 10 payment attempts
+    duration: 60 * 5, // per 5 minutes
+});
+
+// Rate limiting middleware
+const rateLimitMiddleware = (limiter) => async (req, res, next) => {
+    try {
+        await limiter.consume(req.ip);
+        next();
+    } catch (err) {
+        res.status(429).json({ error: 'Too many requests. Please try again later.' });
+    }
+};
 
 // Middleware - FIXED: Increased payload limits for base64 images
 app.use(cors());
@@ -65,9 +308,14 @@ async function findGuestByCode(guestCode) {
     }
 }
 
-// Generate shared guest code (single PIN for all users)
+// Generate unique guest code (6 character alphanumeric)
 function generateGuestCode() {
-    return process.env.SHARED_GUEST_PIN || 'WEDDING2024';
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
 }
 
 // Stripe configuration endpoint
@@ -77,14 +325,15 @@ app.get('/api/stripe-config', (req, res) => {
     });
 });
 
-// Create payment intent
-app.post('/api/create-payment-intent', async (req, res) => {
+// Create payment intent (with Payment Element support)
+app.post('/api/create-payment-intent', rateLimitMiddleware(rateLimiterPayment), async (req, res) => {
     try {
         const { amount, itemId, itemName, guestId, currency = 'nzd' } = req.body;
-        
+
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(amount * 100), // Convert to cents
             currency: currency,
+            payment_method_types: ['card'], // Card includes Apple Pay & Google Pay when enabled
             metadata: {
                 itemId: itemId.toString(),
                 itemName: itemName,
@@ -93,7 +342,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
         });
 
         res.json({
-            clientSecret: paymentIntent.client_secret
+            clientSecret: paymentIntent.client_secret,
+            paymentIntentId: paymentIntent.id
         });
     } catch (error) {
         console.error('Error creating payment intent:', error);
@@ -153,6 +403,7 @@ app.post('/api/upload-image', async (req, res) => {
 app.get('/api/items', async (req, res) => {
     try {
         // Now we can include image URLs safely since they're Storage URLs (not base64)
+        // Note: watchlist_count may not exist in older schemas - handled gracefully
         const { data: items, error} = await supabase
             .from('registry_items')
             .select('id, name, description, image_url, image_url_faded, target_amount, current_amount, has_target, category, priority, date_added, nz_retailers, updated_at, contributors_count')
@@ -181,14 +432,56 @@ app.get('/api/items', async (req, res) => {
             nzRetailers: item.nz_retailers || {},
             contributions: [], // Not included in this query
             contributorsCount: item.contributors_count || 0,
+            watchlistCount: 0, // Will be populated once watchlist_count column exists
             lastUpdated: item.updated_at
         }));
 
-        console.log('API Response Sample Item:', transformedItems[0]); // Debug log
         res.json(transformedItems);
     } catch (error) {
         console.error('Error getting items:', error);
         res.status(500).json({ error: 'Failed to retrieve items' });
+    }
+});
+
+// Add item to watchlist (increment count)
+// Note: Requires watchlist_count column in registry_items table
+app.post('/api/items/:id/watchlist/add', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Try to update watchlist count - will fail gracefully if column doesn't exist
+        const { error: updateError } = await supabase.rpc('increment_watchlist', { item_id: parseInt(id) });
+
+        if (updateError) {
+            // Column may not exist - just return success silently
+            console.log('Watchlist update skipped (column may not exist)');
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        // Don't fail the request - watchlist is optional
+        res.json({ success: true });
+    }
+});
+
+// Remove item from watchlist (decrement count)
+// Note: Requires watchlist_count column in registry_items table
+app.post('/api/items/:id/watchlist/remove', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Try to update watchlist count - will fail gracefully if column doesn't exist
+        const { error: updateError } = await supabase.rpc('decrement_watchlist', { item_id: parseInt(id) });
+
+        if (updateError) {
+            // Column may not exist - just return success silently
+            console.log('Watchlist update skipped (column may not exist)');
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        // Don't fail the request - watchlist is optional
+        res.json({ success: true });
     }
 });
 
@@ -311,7 +604,7 @@ app.post('/api/guest/auth', async (req, res) => {
 });
 
 // Guest login route - UNIVERSAL PASSWORD
-app.post('/api/guest/login', async (req, res) => {
+app.post('/api/guest/login', rateLimitMiddleware(rateLimiterAuth), async (req, res) => {
     try {
         const { guestCode } = req.body;
 
@@ -322,8 +615,8 @@ app.post('/api/guest/login', async (req, res) => {
             });
         }
 
-        // Universal wedding password (case-insensitive)
-        const WEDDING_PASSWORD = 'Beatrice&Samuel2026';
+        // Universal wedding password from environment (case-insensitive)
+        const WEDDING_PASSWORD = process.env.WEDDING_PASSWORD || 'CHANGE_ME';
 
         if (guestCode.trim().toLowerCase() !== WEDDING_PASSWORD.toLowerCase()) {
             return res.status(401).json({
@@ -356,7 +649,7 @@ app.post('/api/guest/login', async (req, res) => {
 });
 
 // Admin login with 12-character code
-app.post('/api/admin/login', async (req, res) => {
+app.post('/api/admin/login', rateLimitMiddleware(rateLimiterAuth), async (req, res) => {
     try {
         const { adminCode, password } = req.body;
         const inputCode = adminCode || password;
@@ -713,8 +1006,136 @@ app.get('/guest/:guestCode', async (req, res) => {
     }
 });
 
-// Contribute to item
-app.post('/api/items/:id/contribute', async (req, res) => {
+// Record contribution after Payment Element success
+app.post('/api/contributions', rateLimitMiddleware(rateLimiterPayment), async (req, res) => {
+    try {
+        const { itemId, guestId, guestName, amount, paymentIntentId, message } = req.body;
+        const contributionAmount = parseFloat(amount);
+
+        // Only use guestId if it's a valid integer (not "universal" or other string)
+        const validGuestId = guestId && !isNaN(parseInt(guestId)) ? parseInt(guestId) : null;
+
+        if (!contributionAmount || contributionAmount <= 0) {
+            return res.status(400).json({ error: 'Invalid contribution amount' });
+        }
+
+        if (!paymentIntentId) {
+            return res.status(400).json({ error: 'Payment intent ID is required' });
+        }
+
+        // Verify the payment intent succeeded
+        try {
+            const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+            if (paymentIntent.status !== 'succeeded') {
+                return res.status(400).json({ error: 'Payment has not been completed' });
+            }
+        } catch (stripeError) {
+            console.error('Error verifying payment:', stripeError);
+            return res.status(400).json({ error: 'Could not verify payment' });
+        }
+
+        // Get item details
+        const { data: item, error: itemError } = await supabase
+            .from('registry_items')
+            .select('*')
+            .eq('id', itemId)
+            .single();
+
+        if (itemError || !item) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+
+        // Create contribution record
+        const { data: contribution, error: contributionError } = await supabase
+            .from('contributions')
+            .insert({
+                registry_item_id: itemId,
+                guest_id: validGuestId,
+                guest_name: guestName || 'Anonymous',
+                amount: contributionAmount,
+                message: message || null,
+                stripe_payment_intent_id: paymentIntentId
+            })
+            .select()
+            .single();
+
+        if (contributionError) {
+            console.error('Error creating contribution:', contributionError);
+            throw contributionError;
+        }
+
+        // Update item current amount
+        const newCurrentAmount = (item.current_amount || 0) + contributionAmount;
+        const isFullyFunded = item.has_target && newCurrentAmount >= item.target_amount;
+
+        await supabase
+            .from('registry_items')
+            .update({
+                current_amount: newCurrentAmount,
+                status: isFullyFunded ? 'completed' : item.status,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', itemId);
+
+        // Update guest contribution tracking
+        if (validGuestId) {
+            const { data: guest } = await supabase
+                .from('guests')
+                .select('total_contributed, contributions_count')
+                .eq('id', validGuestId)
+                .single();
+
+            if (guest) {
+                await supabase
+                    .from('guests')
+                    .update({
+                        total_contributed: (guest.total_contributed || 0) + contributionAmount,
+                        contributions_count: (guest.contributions_count || 0) + 1
+                    })
+                    .eq('id', validGuestId);
+            }
+        }
+
+        // Send notification email
+        sendContributionNotification({
+            guestName: guestName || 'A guest',
+            itemName: item.name,
+            amount: contributionAmount,
+            message: message
+        });
+
+        // Broadcast to connected clients
+        broadcastEvent('contribution', {
+            itemId,
+            itemName: item.name,
+            amount: contributionAmount,
+            guestName: guestName || 'Anonymous'
+        });
+
+        res.json({
+            success: true,
+            contribution: {
+                id: contribution.id,
+                amount: contribution.amount,
+                date: contribution.created_at
+            },
+            item: {
+                id: item.id,
+                name: item.name,
+                currentAmount: newCurrentAmount,
+                targetAmount: item.target_amount,
+                isFullyFunded
+            }
+        });
+
+    } catch (error) {
+        console.error('Error recording contribution:', error);
+        res.status(500).json({ error: 'Failed to record contribution' });
+    }
+});
+
+// Contribute to item (legacy endpoint)
+app.post('/api/items/:id/contribute', rateLimitMiddleware(rateLimiterPayment), async (req, res) => {
     try {
         const { id } = req.params;
         const { amount, guestCode, paymentMethodId } = req.body;
@@ -807,7 +1228,7 @@ app.post('/api/items/:id/contribute', async (req, res) => {
                 if (guest) {
                     const { error: updateGuestError } = await supabase
                         .from('guests')
-                        .update({ 
+                        .update({
                             total_contributed: (guest.total_contributed || 0) + contributionAmount,
                             contributions_count: (guest.contributions_count || 0) + 1
                         })
@@ -817,7 +1238,24 @@ app.post('/api/items/:id/contribute', async (req, res) => {
                         console.error('Error updating guest:', updateGuestError);
                     }
                 }
-                
+
+                // Send email notification (async, don't wait for it)
+                sendContributionNotification({
+                    guestName: guest ? guest.name : 'Anonymous',
+                    itemName: item.name,
+                    amount: contributionAmount,
+                    message: req.body.message || null
+                }).catch(err => console.error('Email notification failed:', err));
+
+                // Broadcast to admin live feed
+                broadcastEvent('contribution', {
+                    guestName: guest ? guest.name : 'Anonymous',
+                    itemName: item.name,
+                    amount: contributionAmount,
+                    message: req.body.message || null,
+                    timestamp: new Date().toISOString()
+                });
+
                 res.json({
                     success: true,
                     paymentIntent: {
@@ -856,6 +1294,221 @@ app.post('/api/items/:id/contribute', async (req, res) => {
     } catch (error) {
         console.error('Error processing contribution:', error);
         res.status(500).json({ error: 'Failed to process contribution' });
+    }
+});
+
+// Mark item as bought in store
+app.post('/api/items/:id/bought-in-store', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { guestCode, amount, guestName: providedGuestName, message } = req.body;
+
+        // Get the item
+        const { data: item, error: itemError } = await supabase
+            .from('registry_items')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (itemError || !item) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+
+        // Check if this is a gift card and validate voucher cap
+        const isGiftCard = item.category === 'Gift Cards' || (item.name && item.name.toLowerCase().includes('gift card'));
+        if (isGiftCard) {
+            const maxAmount = item.target_amount || 250; // Default $250 (5x$50)
+            const currentAmount = item.current_amount || 0;
+            const contributionAmount = amount || 0;
+
+            if (currentAmount + contributionAmount > maxAmount) {
+                const remaining = maxAmount - currentAmount;
+                return res.status(400).json({
+                    error: `Cannot exceed 5 vouchers. Only $${remaining} (${Math.floor(remaining/50)} vouchers) remaining.`
+                });
+            }
+        }
+
+        // Get guest if guestCode provided
+        let guest = null;
+        if (guestCode && guestCode !== 'anonymous') {
+            const { data: guestData } = await supabase
+                .from('guests')
+                .select('*')
+                .eq('guest_code', guestCode.toUpperCase())
+                .single();
+            guest = guestData;
+        }
+
+        const contributionAmount = amount || item.target_amount || 0;
+        const displayName = providedGuestName || (guest ? guest.name : 'Anonymous');
+
+        // Create contribution record with purchased_in_store status
+        const { data: contribution, error: contributionError } = await supabase
+            .from('contributions')
+            .insert([{
+                guest_id: guest ? guest.id : null,
+                registry_item_id: parseInt(id),
+                amount: contributionAmount,
+                guest_name: displayName,
+                guest_email: guest ? guest.email : null,
+                message: message || 'Purchased in store',
+                payment_status: 'purchased_in_store'
+            }])
+            .select()
+            .single();
+
+        if (contributionError) {
+            console.error('Error creating contribution:', contributionError);
+            throw contributionError;
+        }
+
+        // Update item current amount - set to target_amount to mark as complete
+        const { error: updateItemError } = await supabase
+            .from('registry_items')
+            .update({
+                current_amount: item.target_amount || ((item.current_amount || 0) + contributionAmount),
+                contributors_count: (item.contributors_count || 0) + 1
+            })
+            .eq('id', id);
+
+        if (updateItemError) {
+            console.error('Error updating item:', updateItemError);
+        }
+
+        // Update guest contribution tracking if applicable
+        if (guest) {
+            const { error: updateGuestError } = await supabase
+                .from('guests')
+                .update({
+                    total_contributed: (guest.total_contributed || 0) + contributionAmount,
+                    contributions_count: (guest.contributions_count || 0) + 1
+                })
+                .eq('id', guest.id);
+
+            if (updateGuestError) {
+                console.error('Error updating guest:', updateGuestError);
+            }
+        }
+
+        // Send notification
+        sendContributionNotification({
+            guestName: displayName,
+            itemName: item.name,
+            amount: contributionAmount,
+            message: `Purchased in store${message ? `: ${message}` : ''}`
+        }).catch(err => console.error('Email notification failed:', err));
+
+        // Broadcast to admin live feed
+        broadcastEvent('contribution', {
+            guestName: displayName,
+            itemName: item.name,
+            amount: contributionAmount,
+            message: 'Purchased in store',
+            type: 'store_purchase',
+            timestamp: new Date().toISOString()
+        });
+
+        res.json({
+            success: true,
+            contribution: {
+                id: contribution.id,
+                amount: contribution.amount,
+                date: contribution.created_at,
+                guestName: contribution.guest_name,
+                status: 'purchased_in_store'
+            },
+            item: {
+                id: item.id,
+                name: item.name,
+                currentAmount: item.target_amount || ((item.current_amount || 0) + contributionAmount),
+                targetAmount: item.target_amount
+            }
+        });
+    } catch (error) {
+        console.error('Error marking item as bought in store:', error);
+        res.status(500).json({ error: 'Failed to mark item as bought in store' });
+    }
+});
+
+// Undo bought in store
+app.post('/api/items/:id/undo-bought-in-store', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { guestName, guestCode } = req.body;
+
+        // Get the item
+        const { data: item, error: itemError } = await supabase
+            .from('registry_items')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (itemError || !item) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+
+        // Find the most recent store purchase contribution for this item BY THIS USER
+        let query = supabase
+            .from('contributions')
+            .select('*')
+            .eq('registry_item_id', parseInt(id))
+            .eq('payment_status', 'purchased_in_store');
+
+        // Filter by guest name if provided
+        if (guestName && guestName !== 'Anonymous') {
+            query = query.eq('guest_name', guestName);
+        }
+
+        const { data: contribution, error: contribError } = await query
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+        if (contribError || !contribution) {
+            return res.status(404).json({ error: 'No store purchase found to undo for your account' });
+        }
+
+        const contributionAmount = contribution.amount || 0;
+
+        // Delete the contribution
+        const { error: deleteError } = await supabase
+            .from('contributions')
+            .delete()
+            .eq('id', contribution.id);
+
+        if (deleteError) {
+            console.error('Error deleting contribution:', deleteError);
+            throw deleteError;
+        }
+
+        // Update item current amount
+        const newAmount = Math.max(0, (item.current_amount || 0) - contributionAmount);
+        const { error: updateItemError } = await supabase
+            .from('registry_items')
+            .update({
+                current_amount: newAmount,
+                contributors_count: Math.max(0, (item.contributors_count || 1) - 1)
+            })
+            .eq('id', id);
+
+        if (updateItemError) {
+            console.error('Error updating item:', updateItemError);
+        }
+
+        res.json({
+            success: true,
+            message: 'Store purchase undone',
+            item: {
+                id: item.id,
+                name: item.name,
+                currentAmount: newAmount,
+                targetAmount: item.target_amount
+            }
+        });
+    } catch (error) {
+        console.error('Error undoing store purchase:', error);
+        res.status(500).json({ error: 'Failed to undo store purchase' });
     }
 });
 
@@ -914,8 +1567,11 @@ app.post('/api/items', requireAdmin, async (req, res) => {
             nz_retailers: nzRetailers || {},
             contributors_count: 0
         };
-        
-        console.log('Creating new item with data:', newItemData); // Debug log
+
+        // Handle storeLink -> nz_retailers.link mapping
+        if (storeLink) {
+            newItemData.nz_retailers.link = storeLink;
+        }
         
         const { data: newItem, error } = await supabase
             .from('registry_items')
@@ -938,7 +1594,7 @@ app.post('/api/items', requireAdmin, async (req, res) => {
             hasTarget: newItem.has_target,
             category: newItem.category,
             priority: newItem.priority,
-            storeLink: '', // Store link not in database
+            storeLink: newItem.nz_retailers?.link || '', // Extract from nz_retailers
             dateAdded: newItem.date_added,
             nzRetailers: newItem.nz_retailers,
             contributions: []
@@ -957,8 +1613,6 @@ app.put('/api/items/:id', requireAdmin, async (req, res) => {
         const { id } = req.params;
         const updates = req.body;
         
-        console.log('Updating item with data:', updates); // Debug log
-        
         // Transform frontend data to database format
         const dbUpdates = {
             name: updates.name,
@@ -966,12 +1620,19 @@ app.put('/api/items/:id', requireAdmin, async (req, res) => {
             image_url: updates.imageUrl,
             image_url_faded: updates.imageUrl2 || updates.imageUrlFaded, // FIXED: Support both field names
             target_amount: updates.targetAmount,
+            current_amount: updates.currentAmount, // Allow resetting current amount
             has_target: updates.hasTarget,
             category: updates.category,
             priority: updates.priority,
             nz_retailers: updates.nzRetailers,
             updated_at: new Date().toISOString()
         };
+
+        // Handle storeLink -> nz_retailers.link mapping
+        if (updates.storeLink !== undefined) {
+            dbUpdates.nz_retailers = dbUpdates.nz_retailers || {};
+            dbUpdates.nz_retailers.link = updates.storeLink;
+        }
 
         // Remove undefined values
         Object.keys(dbUpdates).forEach(key => {
@@ -980,8 +1641,6 @@ app.put('/api/items/:id', requireAdmin, async (req, res) => {
             }
         });
         
-        console.log('Database update data:', dbUpdates); // Debug log
-        
         const { data: updatedItem, error } = await supabase
             .from('registry_items')
             .update(dbUpdates)
@@ -989,16 +1648,11 @@ app.put('/api/items/:id', requireAdmin, async (req, res) => {
             .select()
             .single();
 
-        if (error) {
-            console.error('Database update error:', error); // Debug log
-            throw error;
-        }
+        if (error) throw error;
 
         if (!updatedItem) {
             return res.status(404).json({ error: 'Item not found' });
         }
-
-        console.log('Updated item from database:', updatedItem); // Debug log
 
         // Transform response
         const transformedItem = {
@@ -1013,14 +1667,13 @@ app.put('/api/items/:id', requireAdmin, async (req, res) => {
             hasTarget: updatedItem.has_target,
             category: updatedItem.category,
             priority: updatedItem.priority,
-            storeLink: '', // Store link not in database
+            storeLink: updatedItem.nz_retailers?.link || '', // Extract from nz_retailers
             dateAdded: updatedItem.date_added,
             nzRetailers: updatedItem.nz_retailers,
             contributions: [],
             lastUpdated: updatedItem.updated_at
         };
         
-        console.log('Transformed response:', transformedItem); // Debug log
         res.json(transformedItem);
     } catch (error) {
         console.error('Error updating item:', error);
@@ -1111,24 +1764,63 @@ app.get('/api/health', async (req, res) => {
     });
 });
 
-// Guest Book API (placeholder - returns empty array)
+// Guest Book API
 app.get('/api/guestbook', async (req, res) => {
     try {
-        // Return empty array for now - guestbook feature not yet implemented
-        res.json([]);
+        const { data, error } = await supabase
+            .from('guestbook')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        res.json(data || []);
     } catch (error) {
         console.error('Error fetching guestbook:', error);
-        res.status(500).json({ error: 'Failed to fetch guestbook entries' });
+        // Return empty array if table doesn't exist yet
+        res.json([]);
     }
 });
 
 app.post('/api/guestbook', async (req, res) => {
     try {
-        // Placeholder - accept but don't store
-        res.json({ success: true });
+        const { name, message } = req.body;
+
+        if (!name || !message) {
+            return res.status(400).json({ error: 'Name and message are required' });
+        }
+
+        const { data, error } = await supabase
+            .from('guestbook')
+            .insert([{
+                name: name.trim(),
+                message: message.trim()
+            }])
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        res.json({ success: true, entry: data });
     } catch (error) {
         console.error('Error saving guestbook entry:', error);
         res.status(500).json({ error: 'Failed to save guestbook entry' });
+    }
+});
+
+app.delete('/api/guestbook/:id', requireAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { error } = await supabase
+            .from('guestbook')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+        res.json({ success: true, message: 'Entry deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting guestbook entry:', error);
+        res.status(500).json({ error: 'Failed to delete entry' });
     }
 });
 
@@ -1234,6 +1926,16 @@ app.post('/api/rsvp', async (req, res) => {
 
         if (error) throw error;
 
+        // Send RSVP email notification
+        await sendRsvpNotification({
+            name: name.trim(),
+            email: email ? email.trim().toLowerCase() : null,
+            attending,
+            guestCount: guestCount || 1,
+            dietary: dietary || null,
+            message: message || null
+        });
+
         res.json({
             success: true,
             message: 'RSVP submitted successfully!',
@@ -1245,7 +1947,7 @@ app.post('/api/rsvp', async (req, res) => {
     }
 });
 
-app.get('/api/rsvps', async (req, res) => {
+app.get('/api/rsvps', requireAdmin, async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('rsvps')
@@ -1284,7 +1986,7 @@ app.get('/api/rsvp/stats', async (req, res) => {
     }
 });
 
-app.delete('/api/rsvp/:id', async (req, res) => {
+app.delete('/api/rsvp/:id', requireAdmin, async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -1299,6 +2001,289 @@ app.delete('/api/rsvp/:id', async (req, res) => {
     } catch (error) {
         console.error('RSVP delete error:', error);
         res.status(500).json({ error: 'Failed to delete RSVP' });
+    }
+});
+
+// ============================================
+// GUEST LIST AUTHENTICATION & RSVP SYSTEM
+// ============================================
+
+// Helper to normalize names for matching
+function normalizeNameForLookup(name) {
+    return name.toLowerCase()
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+        .replace(/[^a-z\s]/g, '') // Remove non-letters
+        .replace(/\s+/g, ' '); // Normalize whitespace
+}
+
+// Look up guest by name (with fuzzy matching)
+app.post('/api/guest-list/lookup', async (req, res) => {
+    try {
+        const { name } = req.body;
+
+        if (!name || name.trim().length < 2) {
+            return res.status(400).json({ error: 'Please enter your name' });
+        }
+
+        const normalizedInput = normalizeNameForLookup(name);
+
+        // Get all guests
+        const { data: guests, error } = await supabase
+            .from('guest_list')
+            .select('*');
+
+        if (error) throw error;
+
+        // Find exact match first
+        let matchedGuest = guests.find(g =>
+            normalizeNameForLookup(g.name) === normalizedInput
+        );
+
+        // If no exact match, try partial matching
+        if (!matchedGuest) {
+            // Try matching first + last name separately
+            const inputParts = normalizedInput.split(' ');
+
+            matchedGuest = guests.find(g => {
+                const guestParts = normalizeNameForLookup(g.name).split(' ');
+                // Match if first name matches and last name starts with input
+                if (inputParts.length >= 2) {
+                    return guestParts[0] === inputParts[0] &&
+                           guestParts[guestParts.length - 1].startsWith(inputParts[inputParts.length - 1]);
+                }
+                // Or if single name matches either first or last
+                return guestParts.some(part => part === inputParts[0]);
+            });
+        }
+
+        if (!matchedGuest) {
+            return res.status(404).json({
+                error: 'Name not found on guest list. Please check spelling or contact Sam & Beatrice.',
+                suggestions: []
+            });
+        }
+
+        // Get family members who can be RSVPed together
+        const { data: familyMembers, error: familyError } = await supabase
+            .from('guest_list')
+            .select('*')
+            .eq('family_group', matchedGuest.family_group);
+
+        if (familyError) throw familyError;
+
+        res.json({
+            success: true,
+            guest: {
+                id: matchedGuest.id,
+                name: matchedGuest.name,
+                familyGroup: matchedGuest.family_group,
+                hasRsvped: matchedGuest.has_rsvped,
+                rsvpResponse: matchedGuest.rsvp_response,
+                side: matchedGuest.side
+            },
+            familyMembers: familyMembers.map(fm => ({
+                id: fm.id,
+                name: fm.name,
+                hasRsvped: fm.has_rsvped,
+                rsvpResponse: fm.rsvp_response
+            })),
+            canRsvpForFamily: familyMembers.length > 1
+        });
+
+    } catch (error) {
+        console.error('Guest lookup error:', error);
+        res.status(500).json({ error: 'Failed to look up guest' });
+    }
+});
+
+// Submit RSVP for guest and/or family members
+app.post('/api/guest-list/rsvp', async (req, res) => {
+    try {
+        const { guestId, attending, email, guestCount, dietary, message, familyRsvps } = req.body;
+
+        if (!guestId || !attending) {
+            return res.status(400).json({ error: 'Guest ID and attendance response required' });
+        }
+
+        // Get the main guest
+        const { data: guest, error: guestError } = await supabase
+            .from('guest_list')
+            .select('*')
+            .eq('id', guestId)
+            .single();
+
+        if (guestError || !guest) {
+            return res.status(404).json({ error: 'Guest not found' });
+        }
+
+        const now = new Date().toISOString();
+
+        // Update main guest's RSVP
+        const { error: updateError } = await supabase
+            .from('guest_list')
+            .update({
+                has_rsvped: true,
+                rsvp_response: attending,
+                rsvp_guest_count: guestCount || 1,
+                rsvp_dietary: dietary || null,
+                rsvp_message: message || null,
+                rsvp_date: now,
+                rsvp_by: guest.name
+            })
+            .eq('id', guestId);
+
+        if (updateError) throw updateError;
+
+        // Send confirmation email to main guest
+        if (email) {
+            await sendGuestRsvpConfirmation({
+                name: guest.name,
+                email: email,
+                attending: attending
+            });
+        }
+
+        // If there are family RSVPs, update those too
+        if (familyRsvps && Array.isArray(familyRsvps)) {
+            for (const familyRsvp of familyRsvps) {
+                if (familyRsvp.guestId && familyRsvp.attending) {
+                    // Get family member name for email
+                    const { data: familyMember } = await supabase
+                        .from('guest_list')
+                        .select('name')
+                        .eq('id', familyRsvp.guestId)
+                        .single();
+
+                    await supabase
+                        .from('guest_list')
+                        .update({
+                            has_rsvped: true,
+                            rsvp_response: familyRsvp.attending,
+                            rsvp_guest_count: 1,
+                            rsvp_dietary: familyRsvp.dietary || null,
+                            rsvp_date: now,
+                            rsvp_by: guest.name // Marked who submitted
+                        })
+                        .eq('id', familyRsvp.guestId)
+                        .eq('family_group', guest.family_group); // Security: only same family
+
+                    // Send confirmation email to family member if email provided
+                    if (familyRsvp.email && familyMember) {
+                        await sendGuestRsvpConfirmation({
+                            name: familyMember.name,
+                            email: familyRsvp.email,
+                            attending: familyRsvp.attending
+                        });
+                    }
+                }
+            }
+        }
+
+        // Send notification email to couple
+        await sendRsvpNotification({
+            name: guest.name,
+            email: email || null,
+            attending,
+            guestCount: guestCount || 1,
+            dietary: dietary || null,
+            message: message || null
+        });
+
+        res.json({
+            success: true,
+            message: 'RSVP submitted successfully!',
+            guest: {
+                id: guest.id,
+                name: guest.name,
+                rsvpResponse: attending
+            }
+        });
+
+    } catch (error) {
+        console.error('RSVP submission error:', error);
+        res.status(500).json({ error: 'Failed to submit RSVP' });
+    }
+});
+
+// Get guest list RSVP stats (public - for countdown display)
+app.get('/api/guest-list/stats', async (req, res) => {
+    try {
+        const { data: guests, error } = await supabase
+            .from('guest_list')
+            .select('has_rsvped, rsvp_response, rsvp_guest_count');
+
+        if (error) throw error;
+
+        const totalInvited = guests.length;
+        const totalRsvped = guests.filter(g => g.has_rsvped).length;
+        const attending = guests.filter(g => g.rsvp_response === 'yes');
+        const notAttending = guests.filter(g => g.rsvp_response === 'no').length;
+        const maybe = guests.filter(g => g.rsvp_response === 'maybe').length;
+        const totalAttending = attending.reduce((sum, g) => sum + (g.rsvp_guest_count || 1), 0);
+        const pending = totalInvited - totalRsvped;
+
+        res.json({
+            totalInvited,
+            totalRsvped,
+            attending: attending.length,
+            notAttending,
+            maybe,
+            totalAttending,
+            pending,
+            percentRsvped: totalInvited > 0 ? Math.round((totalRsvped / totalInvited) * 100) : 0
+        });
+
+    } catch (error) {
+        console.error('Guest list stats error:', error);
+        res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+});
+
+// Check if guest has already RSVPed (for skip-RSVP flow)
+app.get('/api/guest-list/check-rsvp/:guestId', async (req, res) => {
+    try {
+        const { guestId } = req.params;
+
+        const { data: guest, error } = await supabase
+            .from('guest_list')
+            .select('id, name, has_rsvped, rsvp_response, family_group')
+            .eq('id', guestId)
+            .single();
+
+        if (error || !guest) {
+            return res.status(404).json({ error: 'Guest not found' });
+        }
+
+        res.json({
+            hasRsvped: guest.has_rsvped,
+            rsvpResponse: guest.rsvp_response,
+            name: guest.name
+        });
+
+    } catch (error) {
+        console.error('RSVP check error:', error);
+        res.status(500).json({ error: 'Failed to check RSVP status' });
+    }
+});
+
+// Admin: Get all guest list entries
+app.get('/api/admin/guest-list', requireAdmin, async (req, res) => {
+    try {
+        const { data: guests, error } = await supabase
+            .from('guest_list')
+            .select('*')
+            .order('family_group')
+            .order('name');
+
+        if (error) throw error;
+
+        res.json(guests);
+
+    } catch (error) {
+        console.error('Admin guest list error:', error);
+        res.status(500).json({ error: 'Failed to fetch guest list' });
     }
 });
 
@@ -1331,28 +2316,49 @@ app.get('/api/content', async (req, res) => {
 });
 
 // Site Content API - Update content (admin only)
-app.put('/api/content/:key', async (req, res) => {
+app.put('/api/content/:key', requireAdmin, async (req, res) => {
     try {
         const { key } = req.params;
         const { value } = req.body;
 
-        if (!value) {
+        if (value === undefined || value === null) {
             return res.status(400).json({ error: 'Content value is required' });
         }
 
-        const { data, error } = await supabase
+        // First get the existing record to get all required fields
+        const { data: existing, error: checkError } = await supabase
             .from('site_content')
-            .update({ content_value: value })
+            .select('*')
             .eq('content_key', key)
-            .select();
+            .single();
 
-        if (error) throw error;
+        if (checkError && checkError.code !== 'PGRST116') {
+            throw checkError;
+        }
 
-        if (!data || data.length === 0) {
+        if (!existing) {
             return res.status(404).json({ error: 'Content key not found' });
         }
 
-        res.json({ success: true, data: data[0] });
+        // Use upsert to update (bypasses some RLS issues)
+        const { data, error } = await supabase
+            .from('site_content')
+            .upsert({
+                id: existing.id,
+                content_key: key,
+                content_value: value,
+                content_type: existing.content_type,
+                section: existing.section,
+                description: existing.description
+            }, { onConflict: 'id' })
+            .select();
+
+        if (error) {
+            console.error('Upsert error:', error);
+            throw error;
+        }
+
+        res.json({ success: true, data: data ? data[0] : { content_key: key, content_value: value } });
     } catch (error) {
         console.error('Error updating site content:', error);
         res.status(500).json({ error: 'Failed to update site content' });
@@ -1360,7 +2366,7 @@ app.put('/api/content/:key', async (req, res) => {
 });
 
 // Site Content API - Bulk update (admin only)
-app.post('/api/content/bulk-update', async (req, res) => {
+app.post('/api/content/bulk-update', requireAdmin, async (req, res) => {
     try {
         const { updates } = req.body;
 
@@ -1372,17 +2378,36 @@ app.post('/api/content/bulk-update', async (req, res) => {
         for (const update of updates) {
             const { key, value } = update;
 
+            // First get the existing record
+            const { data: existing } = await supabase
+                .from('site_content')
+                .select('*')
+                .eq('content_key', key)
+                .single();
+
+            if (!existing) {
+                results.push({ key, success: false, error: 'Key not found' });
+                continue;
+            }
+
+            // Use upsert to update
             const { data, error } = await supabase
                 .from('site_content')
-                .update({ content_value: value })
-                .eq('content_key', key)
+                .upsert({
+                    id: existing.id,
+                    content_key: key,
+                    content_value: value,
+                    content_type: existing.content_type,
+                    section: existing.section,
+                    description: existing.description
+                }, { onConflict: 'id' })
                 .select();
 
             if (error) {
                 console.error(`Error updating ${key}:`, error);
                 results.push({ key, success: false, error: error.message });
             } else {
-                results.push({ key, success: true, data: data[0] });
+                results.push({ key, success: true, data: data ? data[0] : null });
             }
         }
 
@@ -1392,6 +2417,130 @@ app.post('/api/content/bulk-update', async (req, res) => {
         res.status(500).json({ error: 'Failed to bulk update site content' });
     }
 });
+
+// Thank You Messages API - Get pending thank yous (admin only)
+app.get('/api/admin/thank-yous', requireAdmin, async (req, res) => {
+    try {
+        // Get contributions that haven't been thanked yet
+        const { data: contributions, error } = await supabase
+            .from('contributions')
+            .select(`
+                id,
+                amount,
+                guest_name,
+                guest_email,
+                message,
+                created_at,
+                thank_you_sent,
+                registry_items (id, name)
+            `)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        // Transform and add template
+        const thankYous = (contributions || []).map(c => {
+            const template = generateThankYouTemplate(
+                c.guest_name || 'Friend',
+                c.registry_items?.name || 'our registry',
+                c.message
+            );
+            return {
+                id: c.id,
+                guestName: c.guest_name || 'Anonymous',
+                guestEmail: c.guest_email,
+                itemName: c.registry_items?.name || 'Registry Item',
+                amount: c.amount,
+                message: c.message,
+                date: c.created_at,
+                thankYouSent: c.thank_you_sent || false,
+                template
+            };
+        });
+
+        // Split into pending and sent
+        const pending = thankYous.filter(t => !t.thankYouSent);
+        const sent = thankYous.filter(t => t.thankYouSent);
+
+        res.json({ pending, sent, total: thankYous.length });
+    } catch (error) {
+        console.error('Error fetching thank yous:', error);
+        res.status(500).json({ error: 'Failed to fetch thank you list' });
+    }
+});
+
+// Mark thank you as sent (admin only)
+app.post('/api/admin/thank-yous/:id/mark-sent', requireAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { data, error } = await supabase
+            .from('contributions')
+            .update({
+                thank_you_sent: true,
+                thank_you_sent_at: new Date().toISOString()
+            })
+            .eq('id', id)
+            .select();
+
+        if (error) throw error;
+
+        res.json({ success: true, message: 'Thank you marked as sent' });
+    } catch (error) {
+        console.error('Error marking thank you as sent:', error);
+        res.status(500).json({ error: 'Failed to update thank you status' });
+    }
+});
+
+// Admin Live Feed SSE Endpoint
+app.get('/api/admin/live-feed', requireAdmin, (req, res) => {
+    // Set SSE headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Send initial connection message
+    res.write(`event: connected\ndata: ${JSON.stringify({ message: 'Connected to live feed', timestamp: new Date().toISOString() })}\n\n`);
+
+    // Add client to set
+    sseClients.add(res);
+    console.log(`📡 Admin live feed client connected. Total clients: ${sseClients.size}`);
+
+    // Send heartbeat every 30 seconds to keep connection alive
+    const heartbeat = setInterval(() => {
+        res.write(`event: heartbeat\ndata: ${JSON.stringify({ timestamp: new Date().toISOString() })}\n\n`);
+    }, 30000);
+
+    // Clean up on disconnect
+    req.on('close', () => {
+        clearInterval(heartbeat);
+        sseClients.delete(res);
+        console.log(`📡 Admin live feed client disconnected. Total clients: ${sseClients.size}`);
+    });
+});
+
+// Generate thank you template helper
+function generateThankYouTemplate(guestName, itemName, guestMessage) {
+    let template = `Dear ${guestName},
+
+Thank you so much for your generous contribution toward our ${itemName}.
+
+`;
+
+    if (guestMessage) {
+        template += `Your lovely message - "${guestMessage}" - truly touched our hearts.
+
+`;
+    }
+
+    template += `We're so grateful to have you as part of our journey, and can't wait to celebrate with you on March 14th, 2026.
+
+With love,
+Sam & Beatrice`;
+
+    return template;
+}
 
 // 404 handler
 app.use((req, res) => {
@@ -1431,8 +2580,8 @@ async function startServer() {
             console.log(`📱 Health Check: http://localhost:${PORT}/api/health`);
             console.log('');
             console.log('🔐 ADMIN ACCESS:');
-            console.log(`   Admin Code: ${process.env.ADMIN_CODE || 'SB2024ADMIN1'}`);
-            console.log('   ⚠️  Save this code - you need it to access admin panel!');
+            console.log('   Admin code configured via ADMIN_CODE env variable');
+            console.log('   ⚠️  Check your .env file for the admin code');
             console.log('');
             console.log('✨ FEATURES ENABLED:');
             console.log('   ✅ Beautiful Wedding Registry');

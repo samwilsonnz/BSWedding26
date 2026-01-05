@@ -67,8 +67,8 @@ class WeddingEnhancements {
             name: document.getElementById('rsvpName').value,
             email: document.getElementById('rsvpEmail').value,
             phone: document.getElementById('rsvpPhone')?.value || '',
-            attending: document.getElementById('rsvpAttending').value,
-            guestCount: parseInt(document.getElementById('rsvpGuestCount').value) || 1,
+            attending: document.querySelector('input[name="attending"]:checked')?.value || '',
+            guestCount: 1, // Fixed to 1 per invite
             dietary: document.getElementById('rsvpDietary').value,
             message: document.getElementById('rsvpMessage')?.value || ''
         };
@@ -175,7 +175,57 @@ class WeddingEnhancements {
         if (modal) modal.style.display = 'none';
     }
 
-    // Photo Upload Handler
+    // Image Compression Utility
+    async compressImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Calculate new dimensions
+                    let { width, height } = img;
+
+                    if (width > maxWidth || height > maxHeight) {
+                        const ratio = Math.min(maxWidth / width, maxHeight / height);
+                        width = Math.round(width * ratio);
+                        height = Math.round(height * ratio);
+                    }
+
+                    // Create canvas and draw resized image
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Convert to base64 with compression
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+
+                    // Calculate size reduction
+                    const originalSize = file.size;
+                    const compressedSize = Math.round((compressedDataUrl.length - 22) * 3 / 4);
+                    const savings = Math.round((1 - compressedSize / originalSize) * 100);
+
+                    console.log(`📸 Image compressed: ${(originalSize / 1024).toFixed(1)}KB → ${(compressedSize / 1024).toFixed(1)}KB (${savings}% smaller)`);
+
+                    resolve({
+                        dataUrl: compressedDataUrl,
+                        originalSize,
+                        compressedSize,
+                        savings,
+                        width,
+                        height
+                    });
+                };
+                img.onerror = reject;
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Photo Upload Handler with Compression
     async handlePhotoUpload(event) {
         const file = event.target.files[0];
         if (!file || !file.type.startsWith('image/')) {
@@ -183,52 +233,54 @@ class WeddingEnhancements {
             return;
         }
 
+        // Check file size before compression
+        const maxOriginalSize = 50 * 1024 * 1024; // 50MB max
+        if (file.size > maxOriginalSize) {
+            alert('❌ Image too large. Please select an image under 50MB.');
+            return;
+        }
+
         // Show loading message
         const uploadBtn = document.querySelector('.upload-btn');
         const originalText = uploadBtn.innerHTML;
-        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Optimizing...';
         uploadBtn.disabled = true;
 
         try {
-            // Convert to base64
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                try {
-                    const response = await fetch('/api/gallery/upload', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            image: e.target.result,
-                            guestName: 'Guest'
-                        })
-                    });
+            // Compress the image
+            const compressed = await this.compressImage(file, 1600, 1600, 0.85);
 
-                    const result = await response.json();
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
 
-                    if (result.success) {
-                        alert('✅ Photo uploaded successfully! Thank you for sharing!');
-                        // Reload gallery
-                        await this.loadGalleryPhotos();
-                    } else {
-                        throw new Error(result.error || 'Upload failed');
-                    }
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    alert('❌ Failed to upload photo. Please try again.');
-                } finally {
-                    uploadBtn.innerHTML = originalText;
-                    uploadBtn.disabled = false;
-                    event.target.value = ''; // Reset file input
-                }
-            };
-            reader.readAsDataURL(file);
+            const response = await fetch('/api/gallery/upload', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    image: compressed.dataUrl,
+                    guestName: 'Guest'
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                const savingsMsg = compressed.savings > 0
+                    ? ` (optimized ${compressed.savings}% smaller)`
+                    : '';
+                this.showToast(`Photo uploaded successfully!${savingsMsg}`, 'success');
+                await this.loadGalleryPhotos();
+            } else {
+                throw new Error(result.error || 'Upload failed');
+            }
         } catch (error) {
-            console.error('File read error:', error);
-            alert('❌ Failed to read file. Please try again.');
+            console.error('Upload error:', error);
+            this.showToast('Failed to upload photo. Please try again.', 'error');
+        } finally {
             uploadBtn.innerHTML = originalText;
             uploadBtn.disabled = false;
+            event.target.value = '';
         }
     }
 
@@ -267,27 +319,62 @@ class WeddingEnhancements {
         return div.innerHTML;
     }
 
-    // Parallax Scrolling Effect
+    // Parallax Scrolling Effect (Desktop Only)
     initParallaxEffect() {
+        // Disable parallax on mobile/tablet for performance
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (isMobile || prefersReducedMotion) {
+            console.log('🎨 Parallax disabled (mobile or reduced motion)');
+            return;
+        }
+
         let ticking = false;
+        const heroBackground = document.querySelector('.hero-background');
+        const botanicalTopLeft = document.querySelector('.botanical-top-left');
+        const botanicalBottomRight = document.querySelector('.botanical-bottom-right');
+        const heroContent = document.querySelector('.hero-content');
 
         const updateParallax = () => {
             const scrolled = window.pageYOffset;
-            const heroBackground = document.querySelector('.hero-background');
+            const viewportHeight = window.innerHeight;
 
-            if (heroBackground && scrolled < window.innerHeight) {
-                heroBackground.style.transform = `translateY(${scrolled * 0.5}px)`;
+            // Only apply effect when hero is in view
+            if (scrolled < viewportHeight * 1.5) {
+                // Hero background - moves slower (depth effect)
+                if (heroBackground) {
+                    heroBackground.style.transform = `translate3d(0, ${scrolled * 0.4}px, 0) scale(1.1)`;
+                }
+
+                // Botanical corners - move at different rates for layered depth
+                if (botanicalTopLeft) {
+                    botanicalTopLeft.style.transform = `translate3d(${scrolled * -0.15}px, ${scrolled * 0.2}px, 0)`;
+                }
+                if (botanicalBottomRight) {
+                    botanicalBottomRight.style.transform = `translate3d(${scrolled * 0.15}px, ${scrolled * -0.1}px, 0)`;
+                }
+
+                // Hero content - subtle upward movement
+                if (heroContent && scrolled < viewportHeight) {
+                    const opacity = 1 - (scrolled / viewportHeight) * 0.6;
+                    heroContent.style.transform = `translate3d(0, ${scrolled * -0.15}px, 0)`;
+                    heroContent.style.opacity = Math.max(opacity, 0.3);
+                }
             }
 
             ticking = false;
         };
 
+        // Use passive listener for better scroll performance
         window.addEventListener('scroll', () => {
             if (!ticking) {
                 window.requestAnimationFrame(updateParallax);
                 ticking = true;
             }
-        });
+        }, { passive: true });
+
+        console.log('🎨 Parallax effect initialized (desktop)');
     }
 
     // Accessibility Improvements
@@ -310,40 +397,108 @@ class WeddingEnhancements {
         });
     }
 
-    // Mobile Bottom Navigation
+    // Mobile Bottom Navigation with scroll behavior
     initMobileBottomNav() {
-        if (window.innerWidth <= 768) {
-            const createMobileNav = () => {
-                const mobileNav = document.createElement('div');
-                mobileNav.className = 'mobile-bottom-nav';
-                mobileNav.innerHTML = `
-                    <a href="#hero" class="mobile-nav-item">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                    <a href="#about" class="mobile-nav-item">
-                        <i class="fas fa-heart"></i>
-                        <span>About</span>
-                    </a>
-                    <a href="#schedule" class="mobile-nav-item">
-                        <i class="fas fa-calendar"></i>
-                        <span>Schedule</span>
-                    </a>
-                    <a href="#registry" class="mobile-nav-item">
-                        <i class="fas fa-gift"></i>
-                        <span>Registry</span>
-                    </a>
-                    <a href="#gallery" class="mobile-nav-item">
-                        <i class="fas fa-camera"></i>
-                        <span>Gallery</span>
-                    </a>
-                `;
-                document.body.appendChild(mobileNav);
-            };
+        const mobileNav = document.querySelector('.mobile-bottom-nav');
+        if (!mobileNav) return;
 
-            if (document.getElementById('mainWebsite') && !document.getElementById('mainWebsite').classList.contains('hidden')) {
-                createMobileNav();
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+
+        const updateNavVisibility = () => {
+            const currentScrollY = window.scrollY;
+
+            // Only apply hide/show if scrolled more than 10px
+            if (Math.abs(currentScrollY - lastScrollY) < 10) {
+                ticking = false;
+                return;
             }
+
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                // Scrolling down - hide nav
+                mobileNav.classList.add('nav-hidden');
+            } else {
+                // Scrolling up - show nav
+                mobileNav.classList.remove('nav-hidden');
+            }
+
+            lastScrollY = currentScrollY;
+            ticking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateNavVisibility);
+                ticking = true;
+            }
+        }, { passive: true });
+
+        // Highlight active section
+        this.initActiveNavHighlight();
+    }
+
+    // Highlight active nav item based on scroll position
+    initActiveNavHighlight() {
+        const sections = ['hero', 'registry', 'gallery', 'faq'];
+        const navItems = document.querySelectorAll('.mobile-bottom-nav .nav-item');
+
+        const highlightNav = () => {
+            const scrollY = window.scrollY + 100;
+
+            sections.forEach((sectionId, index) => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+
+                    if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                        navItems.forEach(item => item.classList.remove('active'));
+                        // Find nav item that links to this section
+                        const activeItem = document.querySelector(`.mobile-bottom-nav .nav-item[href="#${sectionId}"]`);
+                        if (activeItem) activeItem.classList.add('active');
+                    }
+                }
+            });
+        };
+
+        window.addEventListener('scroll', highlightNav, { passive: true });
+        highlightNav(); // Initial call
+    }
+
+    // Global Toast Notification System
+    showToast(message, type = 'success', duration = 4000) {
+        // Remove existing toast if any
+        const existingToast = document.querySelector('.toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            info: 'fa-info-circle',
+            warning: 'fa-exclamation-triangle'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${message}`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => toast.classList.add('show'), 50);
+
+        // Auto dismiss
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+
+        // Haptic feedback on mobile
+        if ('vibrate' in navigator) {
+            navigator.vibrate(50);
         }
     }
 }

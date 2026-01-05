@@ -1,0 +1,27 @@
+{
+  "name": "Sam & Beatrice Wedding Registry",
+  "short_name": "SB Wedding",
+  "description": "Wedding registry for Samuel & Beatrice - March 14th, 2026",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e3a5f",
+  "theme_color": "#1e3a5f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["lifestyle", "social"],
+  "lang": "en-NZ",
+  "prefer_related_applications": false
+}

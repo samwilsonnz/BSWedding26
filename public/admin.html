@@ -268,6 +268,298 @@
             font-weight: 600;
         }
 
+        /* Analytics Dashboard Styles */
+        .analytics-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .metric-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--white);
+            border: 2px solid var(--beige);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .metric-content {
+            flex: 1;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--navy);
+            line-height: 1.2;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--light-navy);
+            font-weight: 500;
+        }
+
+        .chart-container {
+            height: 250px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            padding: 0 10px 30px 10px;
+            background: linear-gradient(180deg, rgba(30, 58, 95, 0.02) 0%, rgba(30, 58, 95, 0.05) 100%);
+            border-radius: 10px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            min-width: 20px;
+            background: linear-gradient(180deg, var(--navy) 0%, var(--light-navy) 100%);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+            transform: scaleY(1.02);
+        }
+
+        .chart-bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            color: var(--light-navy);
+            white-space: nowrap;
+        }
+
+        .chart-bar-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: var(--navy);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .chart-bar:hover .chart-bar-value {
+            opacity: 1;
+        }
+
+        .category-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .category-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .category-name {
+            flex: 0 0 100px;
+            font-weight: 500;
+            color: var(--navy);
+        }
+
+        .category-bar-container {
+            flex: 1;
+            height: 24px;
+            background: var(--beige);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .category-bar {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            font-size: 0.8rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .category-amount {
+            flex: 0 0 80px;
+            text-align: right;
+            font-weight: bold;
+            color: var(--navy);
+        }
+
+        .top-contributors-list, .funded-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .contributor-item, .funded-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--white) 100%);
+            border-radius: 12px;
+            border: 2px solid var(--beige);
+            transition: all 0.3s ease;
+        }
+
+        .contributor-item:hover, .funded-item:hover {
+            border-color: var(--gold);
+            transform: translateX(5px);
+        }
+
+        .contributor-rank, .funded-rank {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--navy);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .contributor-rank.gold { background: linear-gradient(135deg, #ffd700, #daa520); }
+        .contributor-rank.silver { background: linear-gradient(135deg, #c0c0c0, #a0a0a0); }
+        .contributor-rank.bronze { background: linear-gradient(135deg, #cd7f32, #a0522d); }
+
+        .contributor-info, .funded-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contributor-name, .funded-name {
+            font-weight: 600;
+            color: var(--navy);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .contributor-count, .funded-progress {
+            font-size: 0.85rem;
+            color: var(--light-navy);
+        }
+
+        .contributor-amount, .funded-amount {
+            font-weight: bold;
+            color: var(--success);
+            font-size: 1.1rem;
+        }
+
+        .engagement-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .engagement-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .engagement-label {
+            flex: 0 0 150px;
+            font-weight: 500;
+            color: var(--navy);
+        }
+
+        .engagement-bar-container {
+            flex: 1;
+            height: 20px;
+            background: var(--beige);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .engagement-bar {
+            height: 100%;
+            background: var(--navy);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .engagement-value {
+            flex: 0 0 80px;
+            text-align: right;
+            font-weight: bold;
+            color: var(--navy);
+        }
+
+        .no-data-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--light-navy);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .metric-card {
+                padding: 1rem;
+            }
+            .metric-value {
+                font-size: 1.4rem;
+            }
+            .chart-container {
+                height: 180px;
+            }
+            .engagement-item {
+                flex-wrap: wrap;
+            }
+            .engagement-label {
+                flex: 1 0 100%;
+            }
+            .engagement-bar-container {
+                flex: 1;
+            }
+        }
+
         /* Registry Items Management */
         .registry-items-grid {
             display: grid;
@@ -1037,6 +1329,149 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
+
+        /* Live Feed Panel */
+        .live-feed-panel {
+            position: fixed;
+            bottom: 0;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .live-feed-panel.collapsed {
+            transform: translateY(calc(100% - 50px));
+        }
+
+        .live-feed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: var(--navy);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            cursor: pointer;
+        }
+
+        .live-feed-header span:first-child {
+            font-weight: bold;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .live-indicator .pulse {
+            width: 8px;
+            height: 8px;
+            background: #f59e0b;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .live-indicator.connected .pulse {
+            background: #10b981;
+        }
+
+        .live-feed-content {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .live-feed-empty {
+            text-align: center;
+            color: #718096;
+            padding: 2rem;
+        }
+
+        .live-feed-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: #f7fafc;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .live-feed-item-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .live-feed-item-content {
+            flex: 1;
+        }
+
+        .live-feed-item-title {
+            font-weight: bold;
+            color: var(--navy);
+            font-size: 0.9rem;
+        }
+
+        .live-feed-item-detail {
+            color: #718096;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .live-feed-item-time {
+            font-size: 0.75rem;
+            color: #a0aec0;
+        }
+
+        .live-feed-toggle {
+            position: absolute;
+            top: -30px;
+            right: 10px;
+            background: var(--navy);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            display: none;
+        }
+
+        .live-feed-panel.collapsed .live-feed-toggle i {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .live-feed-panel {
+                width: 100%;
+                right: 0;
+                border-radius: 15px 15px 0 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1076,6 +1511,22 @@
                 <!-- Stats will be loaded here -->
             </div>
 
+            <!-- Live Feed Panel -->
+            <div id="liveFeedPanel" class="live-feed-panel">
+                <div class="live-feed-header">
+                    <span><i class="fas fa-broadcast-tower"></i> Live Feed</span>
+                    <span class="live-indicator" id="liveIndicator">
+                        <span class="pulse"></span> Connecting...
+                    </span>
+                </div>
+                <div class="live-feed-content" id="liveFeedContent">
+                    <p class="live-feed-empty">Waiting for activity...</p>
+                </div>
+                <button class="live-feed-toggle" onclick="toggleLiveFeed()">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+
             <!-- Tab Navigation -->
             <div class="tab-nav">
                 <button class="tab-btn" data-tab="registry">
@@ -1092,6 +1543,12 @@
                 </button>
                 <button class="tab-btn" data-tab="content">
                     <i class="fas fa-edit"></i> Content Editor
+                </button>
+                <button class="tab-btn" data-tab="thankyous">
+                    <i class="fas fa-heart"></i> Thank Yous
+                </button>
+                <button class="tab-btn" data-tab="analytics">
+                    <i class="fas fa-chart-line"></i> Analytics
                 </button>
             </div>
 
@@ -1328,6 +1785,180 @@
                 </div>
             </div>
 
+            <!-- Thank Yous Tab -->
+            <div id="thankyous-tab" class="tab-content">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <h2><i class="fas fa-heart"></i> Thank You Messages</h2>
+                            <p style="color: var(--light-navy); margin-top: 0.5rem;">Send personalized thank you messages to your generous contributors.</p>
+                        </div>
+                        <button class="btn btn-primary" id="refreshThankYousBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+
+                    <!-- Stats -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <div class="stat-card" style="background: #fff3cd; border-color: #ffc107;">
+                            <div class="stat-number" id="pendingThankYouCount">0</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                        <div class="stat-card" style="background: #d4edda; border-color: #28a745;">
+                            <div class="stat-number" id="sentThankYouCount">0</div>
+                            <div class="stat-label">Sent</div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Thank Yous -->
+                    <h3 style="margin-bottom: 1rem; color: var(--navy);"><i class="fas fa-clock"></i> Pending Thank Yous</h3>
+                    <div id="pendingThankYousList">
+                        <div class="content-loading">
+                            <i class="fas fa-spinner fa-spin"></i> Loading...
+                        </div>
+                    </div>
+
+                    <!-- Sent Thank Yous (Collapsible) -->
+                    <details style="margin-top: 2rem;">
+                        <summary style="cursor: pointer; font-weight: bold; color: var(--navy); padding: 1rem 0;">
+                            <i class="fas fa-check-circle"></i> Sent Thank Yous
+                        </summary>
+                        <div id="sentThankYousList" style="margin-top: 1rem;">
+                            <p style="color: var(--light-navy);">No sent thank yous yet.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard Tab -->
+            <div id="analytics-tab" class="tab-content">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <h2><i class="fas fa-chart-line"></i> Analytics Dashboard</h2>
+                            <p style="color: var(--light-navy); margin-top: 0.5rem;">Track contribution trends, category performance, and guest engagement.</p>
+                        </div>
+                        <button class="btn btn-primary" id="refreshAnalyticsBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh Data
+                        </button>
+                    </div>
+
+                    <!-- Key Metrics Row -->
+                    <div class="analytics-metrics" id="analyticsMetrics">
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="metricTotalRaised">$0</div>
+                                <div class="metric-label">Total Raised</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="metricTotalContributions">0</div>
+                                <div class="metric-label">Contributions</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="metricAvgContribution">$0</div>
+                                <div class="metric-label">Avg. Contribution</div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value" id="metricContributors">0</div>
+                                <div class="metric-label">Contributors</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
+                    <!-- Contribution Trends -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--navy);"><i class="fas fa-chart-area"></i> Contribution Trends (Last 30 Days)</h3>
+                        <div class="chart-container" id="trendsChart">
+                            <div class="content-loading">
+                                <i class="fas fa-spinner fa-spin"></i> Loading trends...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Breakdown -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--navy);"><i class="fas fa-pie-chart"></i> Funding by Category</h3>
+                        <div class="category-chart" id="categoryChart">
+                            <div class="content-loading">
+                                <i class="fas fa-spinner fa-spin"></i> Loading categories...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Contributors & Items -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                    <!-- Top Contributors -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--navy);"><i class="fas fa-trophy"></i> Top Contributors</h3>
+                        <div class="top-contributors-list" id="topContributorsList">
+                            <div class="content-loading">
+                                <i class="fas fa-spinner fa-spin"></i> Loading...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Most Funded Items -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--navy);"><i class="fas fa-fire"></i> Most Funded Items</h3>
+                        <div class="funded-items-list" id="fundedItemsList">
+                            <div class="content-loading">
+                                <i class="fas fa-spinner fa-spin"></i> Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Engagement Stats -->
+                <div class="card" style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--navy);"><i class="fas fa-chart-bar"></i> Guest Engagement</h3>
+                    <div class="engagement-stats" id="engagementStats">
+                        <div class="engagement-item">
+                            <div class="engagement-label">Registry Views</div>
+                            <div class="engagement-bar-container">
+                                <div class="engagement-bar" id="engagementViewsBar" style="width: 0%"></div>
+                            </div>
+                            <div class="engagement-value" id="engagementViews">0 / 0</div>
+                        </div>
+                        <div class="engagement-item">
+                            <div class="engagement-label">Contribution Rate</div>
+                            <div class="engagement-bar-container">
+                                <div class="engagement-bar" id="engagementContribBar" style="width: 0%; background: var(--success);"></div>
+                            </div>
+                            <div class="engagement-value" id="engagementContrib">0%</div>
+                        </div>
+                        <div class="engagement-item">
+                            <div class="engagement-label">Items Funded</div>
+                            <div class="engagement-bar-container">
+                                <div class="engagement-bar" id="engagementItemsBar" style="width: 0%; background: var(--gold);"></div>
+                            </div>
+                            <div class="engagement-value" id="engagementItems">0 / 0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -1383,6 +2014,9 @@
 
                     <div class="form-field">
                         <label>Item Images (2 photos for collage display)</label>
+                        <p class="form-hint" style="margin: -0.5rem 0 1rem 0; font-size: 0.85rem; color: var(--light-navy); opacity: 0.8;">
+                            <i class="fas fa-magic"></i> Images are automatically optimized for fast loading
+                        </p>
                         <div class="images-upload-container">
                             <div class="image-upload-area" id="imageUploadArea1">
                                 <input type="file" id="imageUpload1" accept="image/*">
@@ -1634,6 +2268,11 @@
                     this.loadSiteContent();
                 });
 
+                // Analytics
+                document.getElementById('refreshAnalyticsBtn').addEventListener('click', () => {
+                    this.loadAnalytics();
+                });
+
                 // Item Modal
                 document.getElementById('closeItemModal').addEventListener('click', () => {
                     this.closeItemModal();
@@ -1763,6 +2402,9 @@
                         break;
                     case 'guests':
                         // Already loaded
+                        break;
+                    case 'analytics':
+                        this.loadAnalytics();
                         break;
                 }
             }
@@ -2305,67 +2947,117 @@
                 }
             }
 
+            // Image compression utility for admin uploads
+            async compressImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.85) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            let { width, height } = img;
+
+                            // Only resize if larger than max dimensions
+                            if (width > maxWidth || height > maxHeight) {
+                                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                                width = Math.round(width * ratio);
+                                height = Math.round(height * ratio);
+                            }
+
+                            const canvas = document.createElement('canvas');
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                            const originalSize = file.size;
+                            const compressedSize = Math.round((compressedDataUrl.length - 22) * 3 / 4);
+                            const savings = Math.max(0, Math.round((1 - compressedSize / originalSize) * 100));
+
+                            console.log(`📸 Image optimized: ${(originalSize / 1024).toFixed(1)}KB → ${(compressedSize / 1024).toFixed(1)}KB (${savings}% smaller)`);
+
+                            resolve({
+                                dataUrl: compressedDataUrl,
+                                originalSize,
+                                compressedSize,
+                                savings
+                            });
+                        };
+                        img.onerror = reject;
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
             async handleImageUpload(file, slot) {
                 if (!file || !file.type.startsWith('image/')) {
                     this.showToast('Please select a valid image file', 'error');
                     return;
                 }
 
-                if (file.size > 10 * 1024 * 1024) { // 10MB limit
-                    this.showToast('Image must be smaller than 10MB', 'error');
+                // Increased limit since we'll compress
+                if (file.size > 50 * 1024 * 1024) { // 50MB limit before compression
+                    this.showToast('Image must be smaller than 50MB', 'error');
                     return;
                 }
 
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    const preview = document.getElementById(`uploadPreview${slot}`);
-                    const content = document.getElementById(`uploadContent${slot}`);
-                    const clearBtn = document.getElementById(`clearImage${slot}`);
+                const preview = document.getElementById(`uploadPreview${slot}`);
+                const content = document.getElementById(`uploadContent${slot}`);
+                const clearBtn = document.getElementById(`clearImage${slot}`);
 
-                    try {
-                        // Show loading state
-                        if (content) {
-                            content.innerHTML = '<i class="loading"></i> Uploading...';
-                        }
-
-                        // Upload to Supabase Storage
-                        const response = await fetch('/api/upload-image', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                image: e.target.result,
-                                filename: file.name
-                            })
-                        });
-
-                        if (!response.ok) {
-                            throw new Error('Upload failed');
-                        }
-
-                        const data = await response.json();
-
-                        // Store the Storage URL instead of base64
-                        if (preview && content) {
-                            preview.src = data.url;  // Use Storage URL
-                            preview.dataset.storageUrl = data.url;  // Store for saveItem
-                            preview.style.display = 'block';
-                            content.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Drop image here or click to browse</p>';
-                            content.style.display = 'none';
-                            if (clearBtn) clearBtn.style.display = 'flex';
-
-                            this.showToast(`Image ${slot} uploaded to Storage!`, 'success');
-                        }
-                    } catch (error) {
-                        console.error('Upload error:', error);
-                        this.showToast(`Failed to upload image ${slot}`, 'error');
-                        if (content) {
-                            content.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Drop image here or click to browse</p>';
-                        }
+                try {
+                    // Show optimizing state
+                    if (content) {
+                        content.innerHTML = '<i class="fas fa-magic"></i><p>Optimizing image...</p>';
                     }
-                };
-                reader.readAsDataURL(file);
+
+                    // Compress the image
+                    const compressed = await this.compressImage(file, 1400, 1400, 0.85);
+
+                    // Show uploading state
+                    if (content) {
+                        content.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Uploading...</p>';
+                    }
+
+                    // Upload to Supabase Storage
+                    const response = await fetch('/api/upload-image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            image: compressed.dataUrl,
+                            filename: file.name.replace(/\.[^/.]+$/, '.jpg') // Force .jpg extension
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Upload failed');
+                    }
+
+                    const data = await response.json();
+
+                    // Store the Storage URL instead of base64
+                    if (preview && content) {
+                        preview.src = data.url;
+                        preview.dataset.storageUrl = data.url;
+                        preview.style.display = 'block';
+                        content.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Drop image here or click to browse</p>';
+                        content.style.display = 'none';
+                        if (clearBtn) clearBtn.style.display = 'flex';
+
+                        const savingsMsg = compressed.savings > 0 ? ` (${compressed.savings}% optimized)` : '';
+                        this.showToast(`Image ${slot} uploaded!${savingsMsg}`, 'success');
+                    }
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    this.showToast(`Failed to upload image ${slot}`, 'error');
+                    if (content) {
+                        content.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Drop image here or click to browse</p>';
+                    }
+                }
             }
 
             clearImage(slot) {
@@ -2671,10 +3363,244 @@
                 `).join('');
             }
 
+            // Analytics Dashboard Methods
+            async loadAnalytics() {
+                try {
+                    // Load all data needed for analytics
+                    const [statsResponse, contribResponse, itemsResponse] = await Promise.all([
+                        fetch('/api/statistics'),
+                        fetch('/api/admin/contributions-report', {
+                            headers: { 'Authorization': `Bearer ${this.adminToken}` }
+                        }),
+                        fetch('/api/items')
+                    ]);
+
+                    if (!statsResponse.ok || !contribResponse.ok) {
+                        throw new Error('Failed to load analytics data');
+                    }
+
+                    const stats = await statsResponse.json();
+                    const contribData = await contribResponse.json();
+                    const items = itemsResponse.ok ? await itemsResponse.json() : [];
+
+                    // Render all analytics sections
+                    this.renderMetrics(stats, contribData);
+                    this.renderTrendsChart(contribData);
+                    this.renderCategoryChart(items);
+                    this.renderTopContributors(contribData);
+                    this.renderMostFundedItems(items);
+                    this.renderEngagementStats(stats, contribData, items);
+
+                } catch (error) {
+                    console.error('Error loading analytics:', error);
+                    this.showToast('Error loading analytics data', 'error');
+                }
+            }
+
+            renderMetrics(stats, contribData) {
+                document.getElementById('metricTotalRaised').textContent = `$${stats.totalRaised.toLocaleString('en-NZ', { maximumFractionDigits: 0 })}`;
+                document.getElementById('metricTotalContributions').textContent = stats.totalContributions;
+                document.getElementById('metricAvgContribution').textContent = `$${stats.averageContribution.toFixed(0)}`;
+                document.getElementById('metricContributors').textContent = contribData.summary.guestsWhoContributed;
+            }
+
+            renderTrendsChart(contribData) {
+                const container = document.getElementById('trendsChart');
+
+                // Get all contributions with dates
+                const allContributions = [];
+                contribData.guestContributions.forEach(guest => {
+                    guest.contributions.forEach(c => {
+                        allContributions.push({
+                            date: new Date(c.date),
+                            amount: c.amount
+                        });
+                    });
+                });
+
+                if (allContributions.length === 0) {
+                    container.innerHTML = '<div class="no-data-message">No contribution data yet</div>';
+                    return;
+                }
+
+                // Group by day for last 30 days
+                const now = new Date();
+                const days = [];
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date(now);
+                    date.setDate(date.getDate() - i);
+                    date.setHours(0, 0, 0, 0);
+                    days.push({
+                        date: date,
+                        label: date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' }),
+                        amount: 0
+                    });
+                }
+
+                // Sum contributions by day
+                allContributions.forEach(c => {
+                    const contribDate = new Date(c.date);
+                    contribDate.setHours(0, 0, 0, 0);
+                    const dayData = days.find(d => d.date.getTime() === contribDate.getTime());
+                    if (dayData) {
+                        dayData.amount += c.amount;
+                    }
+                });
+
+                // Find max for scaling
+                const maxAmount = Math.max(...days.map(d => d.amount), 1);
+
+                // Render bars
+                container.innerHTML = days.map((day, index) => {
+                    const height = (day.amount / maxAmount) * 100;
+                    const showLabel = index % 5 === 0 || index === days.length - 1;
+                    return `
+                        <div class="chart-bar" style="height: ${Math.max(height, 2)}%">
+                            <div class="chart-bar-value">$${day.amount.toFixed(0)}</div>
+                            ${showLabel ? `<div class="chart-bar-label">${day.label}</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            renderCategoryChart(items) {
+                const container = document.getElementById('categoryChart');
+
+                if (items.length === 0) {
+                    container.innerHTML = '<div class="no-data-message">No items in registry</div>';
+                    return;
+                }
+
+                // Group by category
+                const categoryData = {};
+                const categoryColors = {
+                    kitchen: '#3b82f6',
+                    home: '#10b981',
+                    experiences: '#f59e0b',
+                    other: '#8b5cf6'
+                };
+
+                items.forEach(item => {
+                    const cat = item.category || 'other';
+                    if (!categoryData[cat]) {
+                        categoryData[cat] = { total: 0, count: 0 };
+                    }
+                    categoryData[cat].total += item.currentAmount || 0;
+                    categoryData[cat].count++;
+                });
+
+                const totalFunded = Object.values(categoryData).reduce((sum, c) => sum + c.total, 0);
+
+                // Sort by amount
+                const sortedCategories = Object.entries(categoryData)
+                    .sort((a, b) => b[1].total - a[1].total);
+
+                container.innerHTML = sortedCategories.map(([cat, data]) => {
+                    const percentage = totalFunded > 0 ? (data.total / totalFunded) * 100 : 0;
+                    const categoryName = cat.charAt(0).toUpperCase() + cat.slice(1);
+                    return `
+                        <div class="category-item">
+                            <div class="category-color" style="background: ${categoryColors[cat] || '#6b7280'}"></div>
+                            <div class="category-name">${categoryName}</div>
+                            <div class="category-bar-container">
+                                <div class="category-bar" style="width: ${percentage}%; background: ${categoryColors[cat] || '#6b7280'}">
+                                    ${percentage > 15 ? `${percentage.toFixed(0)}%` : ''}
+                                </div>
+                            </div>
+                            <div class="category-amount">$${data.total.toFixed(0)}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            renderTopContributors(contribData) {
+                const container = document.getElementById('topContributorsList');
+
+                const contributors = contribData.guestContributions
+                    .filter(g => g.totalContributed > 0)
+                    .sort((a, b) => b.totalContributed - a.totalContributed)
+                    .slice(0, 5);
+
+                if (contributors.length === 0) {
+                    container.innerHTML = '<div class="no-data-message">No contributions yet</div>';
+                    return;
+                }
+
+                container.innerHTML = contributors.map((contributor, index) => {
+                    const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                    return `
+                        <div class="contributor-item">
+                            <div class="contributor-rank ${rankClass}">${index + 1}</div>
+                            <div class="contributor-info">
+                                <div class="contributor-name">${contributor.name}</div>
+                                <div class="contributor-count">${contributor.contributionCount} contribution${contributor.contributionCount !== 1 ? 's' : ''}</div>
+                            </div>
+                            <div class="contributor-amount">$${contributor.totalContributed.toFixed(0)}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            renderMostFundedItems(items) {
+                const container = document.getElementById('fundedItemsList');
+
+                const fundedItems = items
+                    .filter(item => (item.currentAmount || 0) > 0)
+                    .sort((a, b) => (b.currentAmount || 0) - (a.currentAmount || 0))
+                    .slice(0, 5);
+
+                if (fundedItems.length === 0) {
+                    container.innerHTML = '<div class="no-data-message">No items funded yet</div>';
+                    return;
+                }
+
+                container.innerHTML = fundedItems.map((item, index) => {
+                    const progress = item.hasTarget && item.targetAmount > 0
+                        ? Math.min(100, ((item.currentAmount || 0) / item.targetAmount) * 100)
+                        : 100;
+                    return `
+                        <div class="funded-item">
+                            <div class="funded-rank">${index + 1}</div>
+                            <div class="funded-info">
+                                <div class="funded-name">${item.name}</div>
+                                <div class="funded-progress">${progress.toFixed(0)}% funded</div>
+                            </div>
+                            <div class="funded-amount">$${(item.currentAmount || 0).toFixed(0)}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            renderEngagementStats(stats, contribData, items) {
+                // Registry Views (guests who accessed)
+                const viewsPercent = stats.totalGuests > 0
+                    ? (stats.guestsWithAccess / stats.totalGuests) * 100
+                    : 0;
+                document.getElementById('engagementViewsBar').style.width = `${viewsPercent}%`;
+                document.getElementById('engagementViews').textContent = `${stats.guestsWithAccess} / ${stats.totalGuests}`;
+
+                // Contribution Rate (guests who contributed / guests who accessed)
+                const contribRate = stats.guestsWithAccess > 0
+                    ? (contribData.summary.guestsWhoContributed / stats.guestsWithAccess) * 100
+                    : 0;
+                document.getElementById('engagementContribBar').style.width = `${contribRate}%`;
+                document.getElementById('engagementContrib').textContent = `${contribRate.toFixed(0)}%`;
+
+                // Items Funded (items with any funding / total items)
+                const itemsWithFunding = items.filter(i => (i.currentAmount || 0) > 0).length;
+                const itemsFundedPercent = items.length > 0
+                    ? (itemsWithFunding / items.length) * 100
+                    : 0;
+                document.getElementById('engagementItemsBar').style.width = `${itemsFundedPercent}%`;
+                document.getElementById('engagementItems').textContent = `${itemsWithFunding} / ${items.length}`;
+            }
+
             async loadRSVPs() {
                 try {
                     const [rsvpsResponse, statsResponse] = await Promise.all([
-                        fetch('/api/rsvps'),
+                        fetch('/api/rsvps', {
+                            headers: { 'Authorization': `Bearer ${this.adminToken}` }
+                        }),
                         fetch('/api/rsvp/stats')
                     ]);
 
@@ -2928,7 +3854,8 @@
                     accommodation: [],
                     faq: [],
                     registry: [],
-                    gallery: []
+                    gallery: [],
+                    footer: []
                 };
 
                 // Organize content by section
@@ -2946,7 +3873,8 @@
                     accommodation: '🏨 Accommodation & Travel',
                     faq: '❓ FAQ Section',
                     registry: '🎁 Registry Section',
-                    gallery: '📷 Gallery Section'
+                    gallery: '📷 Gallery Section',
+                    footer: '👣 Footer Section'
                 };
 
                 let html = '';
@@ -3055,6 +3983,272 @@
         document.addEventListener('DOMContentLoaded', () => {
             adminApp = new AdminDashboard();
         });
+
+        // Thank You Messages Functions
+        async function loadThankYous() {
+            const pendingContainer = document.getElementById('pendingThankYousList');
+            const sentContainer = document.getElementById('sentThankYousList');
+
+            pendingContainer.innerHTML = '<div class="content-loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+            try {
+                const response = await fetch('/api/admin/thank-yous', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load thank yous');
+
+                const data = await response.json();
+
+                // Update stats
+                document.getElementById('pendingThankYouCount').textContent = data.pending.length;
+                document.getElementById('sentThankYouCount').textContent = data.sent.length;
+
+                // Render pending
+                if (data.pending.length === 0) {
+                    pendingContainer.innerHTML = '<p style="color: var(--light-navy); text-align: center; padding: 2rem;">No pending thank yous. Great job!</p>';
+                } else {
+                    pendingContainer.innerHTML = data.pending.map(item => createThankYouCard(item, false)).join('');
+                }
+
+                // Render sent
+                if (data.sent.length === 0) {
+                    sentContainer.innerHTML = '<p style="color: var(--light-navy);">No sent thank yous yet.</p>';
+                } else {
+                    sentContainer.innerHTML = data.sent.map(item => createThankYouCard(item, true)).join('');
+                }
+
+            } catch (error) {
+                console.error('Error loading thank yous:', error);
+                pendingContainer.innerHTML = '<p style="color: var(--error); text-align: center; padding: 2rem;">Failed to load thank yous. Please try again.</p>';
+            }
+        }
+
+        function createThankYouCard(item, isSent) {
+            const date = new Date(item.date).toLocaleDateString('en-NZ', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+
+            return `
+                <div class="thank-you-card" style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; ${isSent ? 'opacity: 0.7;' : ''}">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                        <div>
+                            <h4 style="color: var(--navy); margin: 0;">${item.guestName}</h4>
+                            <p style="color: var(--light-navy); font-size: 0.9rem; margin: 0.25rem 0;">
+                                Contributed $${item.amount.toFixed(2)} to <strong>${item.itemName}</strong>
+                            </p>
+                            <p style="color: #718096; font-size: 0.8rem; margin: 0;">${date}</p>
+                        </div>
+                        ${!isSent ? `
+                            <button class="btn btn-success btn-sm" onclick="markThankYouSent(${item.id})" style="white-space: nowrap;">
+                                <i class="fas fa-check"></i> Mark Sent
+                            </button>
+                        ` : `
+                            <span style="color: #28a745; font-size: 0.85rem;"><i class="fas fa-check-circle"></i> Sent</span>
+                        `}
+                    </div>
+                    ${item.message ? `
+                        <div style="background: #f7fafc; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid var(--gold);">
+                            <p style="margin: 0; font-style: italic; color: var(--navy);">"${item.message}"</p>
+                        </div>
+                    ` : ''}
+                    <div style="background: #fafafa; padding: 1rem; border-radius: 8px; position: relative;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-weight: bold; color: var(--navy); font-size: 0.9rem;">Message Template:</span>
+                            <button class="btn btn-outline btn-sm" onclick="copyThankYouTemplate(this)" style="font-size: 0.8rem;">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <pre style="margin: 0; white-space: pre-wrap; font-family: inherit; font-size: 0.9rem; color: #4a5568; line-height: 1.6;">${item.template}</pre>
+                    </div>
+                    ${item.guestEmail ? `
+                        <div style="margin-top: 1rem;">
+                            <a href="mailto:${item.guestEmail}?subject=Thank You from Sam %26 Beatrice&body=${encodeURIComponent(item.template)}"
+                               class="btn btn-primary btn-sm" style="font-size: 0.85rem;">
+                                <i class="fas fa-envelope"></i> Send Email to ${item.guestEmail}
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function copyThankYouTemplate(btn) {
+            const pre = btn.closest('div').nextElementSibling;
+            navigator.clipboard.writeText(pre.textContent).then(() => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#28a745';
+                btn.style.color = 'white';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+
+        async function markThankYouSent(id) {
+            try {
+                const response = await fetch(`/api/admin/thank-yous/${id}/mark-sent`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to mark as sent');
+
+                // Reload the list
+                loadThankYous();
+                showToast('Thank you marked as sent!', 'success');
+
+            } catch (error) {
+                console.error('Error marking thank you as sent:', error);
+                showToast('Failed to update. Please try again.', 'error');
+            }
+        }
+
+        // Load thank yous when tab is clicked
+        document.addEventListener('DOMContentLoaded', () => {
+            const thankYouTab = document.querySelector('[data-tab="thankyous"]');
+            if (thankYouTab) {
+                thankYouTab.addEventListener('click', loadThankYous);
+            }
+            // Refresh button
+            const refreshThankYousBtn = document.getElementById('refreshThankYousBtn');
+            if (refreshThankYousBtn) {
+                refreshThankYousBtn.addEventListener('click', loadThankYous);
+            }
+        });
+
+        // Live Feed SSE Connection
+        let liveFeedEventSource = null;
+        let liveFeedNotificationSound = null;
+
+        function initLiveFeed() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) return;
+
+            // Close existing connection
+            if (liveFeedEventSource) {
+                liveFeedEventSource.close();
+            }
+
+            // Create notification sound
+            try {
+                liveFeedNotificationSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU' + Array(300).join('123'));
+            } catch(e) {}
+
+            // Connect to SSE endpoint
+            liveFeedEventSource = new EventSource(`/api/admin/live-feed?token=${token}`);
+
+            liveFeedEventSource.addEventListener('connected', (e) => {
+                const indicator = document.getElementById('liveIndicator');
+                indicator.classList.add('connected');
+                indicator.innerHTML = '<span class="pulse"></span> Live';
+                console.log('📡 Live feed connected');
+            });
+
+            liveFeedEventSource.addEventListener('contribution', (e) => {
+                const data = JSON.parse(e.data);
+                addLiveFeedItem(data);
+                playNotificationSound();
+            });
+
+            liveFeedEventSource.addEventListener('heartbeat', (e) => {
+                // Keep-alive, no action needed
+            });
+
+            liveFeedEventSource.onerror = () => {
+                const indicator = document.getElementById('liveIndicator');
+                indicator.classList.remove('connected');
+                indicator.innerHTML = '<span class="pulse"></span> Reconnecting...';
+
+                // Attempt to reconnect after 5 seconds
+                setTimeout(() => {
+                    if (localStorage.getItem('adminToken')) {
+                        initLiveFeed();
+                    }
+                }, 5000);
+            };
+        }
+
+        function addLiveFeedItem(data) {
+            const container = document.getElementById('liveFeedContent');
+            const emptyMsg = container.querySelector('.live-feed-empty');
+            if (emptyMsg) emptyMsg.remove();
+
+            const time = new Date(data.timestamp).toLocaleTimeString('en-NZ', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const item = document.createElement('div');
+            item.className = 'live-feed-item';
+            item.innerHTML = `
+                <div class="live-feed-item-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="live-feed-item-content">
+                    <div class="live-feed-item-title">$${data.amount.toFixed(2)} from ${data.guestName}</div>
+                    <div class="live-feed-item-detail">${data.itemName}</div>
+                    ${data.message ? `<div class="live-feed-item-detail" style="font-style: italic;">"${data.message}"</div>` : ''}
+                    <div class="live-feed-item-time">${time}</div>
+                </div>
+            `;
+
+            // Add to top of list
+            container.insertBefore(item, container.firstChild);
+
+            // Keep only last 20 items
+            const items = container.querySelectorAll('.live-feed-item');
+            if (items.length > 20) {
+                items[items.length - 1].remove();
+            }
+
+            // Expand panel if collapsed
+            document.getElementById('liveFeedPanel').classList.remove('collapsed');
+        }
+
+        function playNotificationSound() {
+            if (liveFeedNotificationSound) {
+                try {
+                    liveFeedNotificationSound.play().catch(() => {});
+                } catch(e) {}
+            }
+        }
+
+        function toggleLiveFeed() {
+            document.getElementById('liveFeedPanel').classList.toggle('collapsed');
+        }
+
+        // Initialize live feed after login
+        document.addEventListener('DOMContentLoaded', () => {
+            // Header click to toggle
+            const header = document.querySelector('.live-feed-header');
+            if (header) {
+                header.addEventListener('click', toggleLiveFeed);
+            }
+
+            // Check if already logged in
+            if (localStorage.getItem('adminToken')) {
+                setTimeout(initLiveFeed, 1000);
+            }
+        });
+
+        // Hook into login success to start live feed
+        const originalShowToast = window.showToast;
+        window.showToast = function(message, type) {
+            if (originalShowToast) originalShowToast(message, type);
+            if (message.includes('Welcome') && type === 'success') {
+                setTimeout(initLiveFeed, 500);
+            }
+        };
     </script>
 </body>
 </html>
