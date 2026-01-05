@@ -5888,13 +5888,16 @@
                         this.pendingGuest = result.guest;
                         this.familyMembers = result.familyMembers || [];
 
+                        // Reset button state
+                        findBtn.innerHTML = '<i class="fas fa-check"></i> Found!';
+
                         // Check if already RSVPed
                         if (result.guest.hasRsvped) {
                             console.log('👋 Guest already RSVPed, skipping to registry');
-                            this.showAlreadyRsvped(result.guest);
+                            setTimeout(() => this.showAlreadyRsvped(result.guest), 300);
                         } else {
                             // Show RSVP form
-                            this.showRsvpForm(result.guest, result.familyMembers);
+                            setTimeout(() => this.showRsvpForm(result.guest, result.familyMembers), 300);
                         }
                     } else {
                         // Name not found - deny access
@@ -5958,13 +5961,25 @@
                 // Store the RSVP response for completeLogin
                 this.lastRsvpResponse = guest.rsvpResponse;
 
-                // Hide step 3, show already RSVPed content
+                // Hide step 2 content
+                document.getElementById('step2Content').classList.remove('active');
+
+                // Hide step 3 content
                 document.getElementById('step3Content').classList.remove('active');
+
+                // Show already RSVPed content
                 document.getElementById('alreadyRsvpedContent').style.display = 'block';
                 document.getElementById('alreadyRsvpedContent').classList.add('active');
 
                 // Update step indicator to show step 3
                 this.updateStepIndicator(3);
+
+                // Reset the find button for next time
+                const findBtn = document.getElementById('findNameBtn');
+                if (findBtn) {
+                    findBtn.innerHTML = '<i class="fas fa-search"></i> Find My Name';
+                    findBtn.disabled = false;
+                }
             }
 
             // Step 3: Submit RSVP
