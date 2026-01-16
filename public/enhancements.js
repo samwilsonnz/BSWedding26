@@ -298,18 +298,15 @@ class WeddingEnhancements {
         if (now < galleryOpenDate) {
             // Gallery is locked - show countdown message
             if (galleryContainer) {
-                galleryContainer.style.display = 'flex';
-                galleryContainer.style.justifyContent = 'center';
-                galleryContainer.style.minHeight = 'auto';
+                galleryContainer.className = ''; // Remove gallery-grid class
+                galleryContainer.style.cssText = 'display: block; text-align: center; padding: 0.5rem 2rem 1.5rem;';
                 galleryContainer.innerHTML = `
-                    <div style="text-align: center; padding: 1rem 2rem 2rem;">
-                        <i class="fas fa-lock" style="font-size: 3rem; color: var(--botanical-blue); opacity: 0.5; margin-bottom: 1rem; display: block;"></i>
-                        <h3 style="color: var(--navy); margin-bottom: 0.5rem; font-size: 1.25rem;">Gallery Opens on Wedding Day</h3>
-                        <p style="color: var(--light-navy); font-size: 0.95rem; margin: 0;">
-                            The photo gallery will be available from 5:00 PM on March 14th, 2026.<br>
-                            <span style="font-size: 0.85rem; opacity: 0.8;">Check back during the reception to share and view photos!</span>
-                        </p>
-                    </div>
+                    <i class="fas fa-lock" style="font-size: 2.5rem; color: var(--botanical-blue); opacity: 0.5; margin-bottom: 0.75rem; display: block;"></i>
+                    <h3 style="color: var(--navy); margin-bottom: 0.4rem; font-size: 1.2rem;">Gallery Opens on Wedding Day</h3>
+                    <p style="color: var(--light-navy); font-size: 0.9rem; margin: 0; line-height: 1.5;">
+                        The photo gallery will be available from 5:00 PM on March 14th, 2026.<br>
+                        <span style="font-size: 0.85rem; opacity: 0.8;">Check back during the reception to share and view photos!</span>
+                    </p>
                 `;
             }
             if (placeholder) placeholder.style.display = 'none';
