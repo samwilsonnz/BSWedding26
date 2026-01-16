@@ -4,7 +4,7 @@ const path = require('path');
 const helmet = require('helmet');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 const { createClient } = require('@supabase/supabase-js');
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
 // Load environment variables (works locally with .env file, Railway provides them directly)
 require('dotenv').config();
@@ -35,8 +35,22 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Resend email setup (optional - for email notifications)
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+// Nodemailer email setup (internal email service)
+let emailTransporter = null;
+if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    emailTransporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT) || 587,
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
+        }
+    });
+    console.log('✅ Email service configured with SMTP');
+} else {
+    console.log('📧 Email not configured (set SMTP_HOST, SMTP_USER, SMTP_PASS)');
+}
 
 // SSE clients for live admin feed
 const sseClients = new Set();
@@ -51,18 +65,19 @@ function broadcastEvent(eventType, data) {
 
 // Email notification helper
 async function sendContributionNotification(contribution) {
-    if (!resend || !process.env.NOTIFICATION_EMAIL) {
-        console.log('📧 Email notifications not configured (set RESEND_API_KEY and NOTIFICATION_EMAIL)');
+    if (!emailTransporter || !process.env.NOTIFICATION_EMAIL) {
+        console.log('📧 Email notifications not configured (set SMTP settings and NOTIFICATION_EMAIL)');
         return;
     }
 
     try {
         const { guestName, itemName, amount, message } = contribution;
+        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 
-        await resend.emails.send({
-            from: 'Wedding Registry <onboarding@resend.dev>',  // Use your verified domain in production
+        await emailTransporter.sendMail({
+            from: `"Wedding Registry" <${fromEmail}>`,
             to: process.env.NOTIFICATION_EMAIL,
-            subject: `💝 New Contribution: $${amount.toFixed(2)} from ${guestName}`,
+            subject: `New Contribution: $${amount.toFixed(2)} from ${guestName}`,
             html: `
                 <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                     <div style="background: linear-gradient(135deg, #1e3a5f, #2c5282); padding: 30px; border-radius: 15px 15px 0 0; text-align: center;">
@@ -93,8 +108,8 @@ async function sendContributionNotification(contribution) {
 
 // RSVP email notification helper
 async function sendRsvpNotification(rsvp) {
-    if (!resend || !process.env.NOTIFICATION_EMAIL) {
-        console.log('📧 Email notifications not configured (set RESEND_API_KEY and NOTIFICATION_EMAIL)');
+    if (!emailTransporter || !process.env.NOTIFICATION_EMAIL) {
+        console.log('📧 Email notifications not configured (set SMTP settings and NOTIFICATION_EMAIL)');
         return;
     }
 
@@ -102,11 +117,12 @@ async function sendRsvpNotification(rsvp) {
         const { name, email, attending, guestCount, dietary, message } = rsvp;
         const attendingText = attending === 'yes' ? 'Attending' : attending === 'no' ? 'Not Attending' : 'Maybe';
         const attendingColor = attending === 'yes' ? '#28a745' : attending === 'no' ? '#dc3545' : '#ffc107';
+        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 
-        await resend.emails.send({
-            from: 'Wedding Registry <onboarding@resend.dev>',
+        await emailTransporter.sendMail({
+            from: `"Wedding Registry" <${fromEmail}>`,
             to: process.env.NOTIFICATION_EMAIL,
-            subject: `📋 New RSVP: ${name} - ${attendingText}`,
+            subject: `New RSVP: ${name} - ${attendingText}`,
             html: `
                 <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                     <div style="background: linear-gradient(135deg, #1e3a5f, #2c5282); padding: 30px; border-radius: 15px 15px 0 0; text-align: center;">
@@ -140,8 +156,8 @@ async function sendRsvpNotification(rsvp) {
 
 // Send RSVP confirmation email to guest (with website link and password)
 async function sendGuestRsvpConfirmation(guest) {
-    if (!resend) {
-        console.log('📧 Resend not configured - skipping guest confirmation email');
+    if (!emailTransporter) {
+        console.log('📧 Email not configured - skipping guest confirmation email');
         return;
     }
 
@@ -158,9 +174,10 @@ async function sendGuestRsvpConfirmation(guest) {
 
         const siteUrl = process.env.SITE_URL || 'https://bswedding26.com';
         const password = process.env.WEDDING_PASSWORD || 'Beatrice&Samuel2026';
+        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 
-        await resend.emails.send({
-            from: 'Sam & Beatrice Wedding <onboarding@resend.dev>',
+        await emailTransporter.sendMail({
+            from: `"Sam & Beatrice Wedding" <${fromEmail}>`,
             to: email,
             subject: `RSVP Confirmed - Sam & Beatrice's Wedding`,
             html: `
