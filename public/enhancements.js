@@ -298,13 +298,16 @@ class WeddingEnhancements {
         if (now < galleryOpenDate) {
             // Gallery is locked - show countdown message
             if (galleryContainer) {
+                galleryContainer.style.display = 'flex';
+                galleryContainer.style.justifyContent = 'center';
+                galleryContainer.style.minHeight = 'auto';
                 galleryContainer.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 2rem;">
-                        <i class="fas fa-lock" style="font-size: 4rem; color: var(--botanical-blue); opacity: 0.5; margin-bottom: 1.5rem; display: block;"></i>
-                        <h3 style="color: var(--navy); margin-bottom: 0.75rem;">Gallery Opens on Wedding Day</h3>
-                        <p style="color: var(--light-navy); font-size: 1rem;">
+                    <div style="text-align: center; padding: 1rem 2rem 2rem;">
+                        <i class="fas fa-lock" style="font-size: 3rem; color: var(--botanical-blue); opacity: 0.5; margin-bottom: 1rem; display: block;"></i>
+                        <h3 style="color: var(--navy); margin-bottom: 0.5rem; font-size: 1.25rem;">Gallery Opens on Wedding Day</h3>
+                        <p style="color: var(--light-navy); font-size: 0.95rem; margin: 0;">
                             The photo gallery will be available from 5:00 PM on March 14th, 2026.<br>
-                            <span style="font-size: 0.9rem; opacity: 0.8;">Check back during the reception to share and view photos!</span>
+                            <span style="font-size: 0.85rem; opacity: 0.8;">Check back during the reception to share and view photos!</span>
                         </p>
                     </div>
                 `;
