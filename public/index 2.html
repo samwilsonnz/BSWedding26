@@ -4764,19 +4764,20 @@
                         <div class="timeline-content">
                             <h3 data-content="schedule_dancing_title">Dancing & Party</h3>
                             <div class="timeline-time"><i class="far fa-clock"></i> <span data-content="schedule_dancing_time">7:00 PM</span></div>
-                            <p data-content="schedule_dancing_desc">Let's dance the night away! The dance floor will be open and the party continues.</p>
+                            <p data-content="schedule_dancing_desc">Let's dance the night away! The dance floor will be open and the party continues late into the evening.</p>
                         </div>
                     </div>
+
                     <div class="timeline-item">
                         <div class="timeline-icon">
                             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                             </svg>
                         </div>
                         <div class="timeline-content">
                             <h3 data-content="schedule_end_title">End of Celebration</h3>
                             <div class="timeline-time"><i class="far fa-clock"></i> <span data-content="schedule_end_time">10:00 PM</span></div>
-                            <p data-content="schedule_end_desc">Thank you for celebrating with us! Safe travels home.</p>
+                            <p data-content="schedule_end_desc">Thank you for celebrating with us! We hope you have a wonderful evening and a safe journey home.</p>
                         </div>
                     </div>
                 </div>
@@ -4949,14 +4950,6 @@
                     <p data-content="registry_description">Thank you for being part of our special day! Instead of traditional gifts, we've created this registry where you can contribute towards items that will help us build our new home together. Every contribution, no matter the size, means the world to us and brings us one step closer to our dreams. 💕</p>
                 </div>
 
-                <!-- Gift Delivery Note -->
-                <div style="background: linear-gradient(135deg, #f8f6f3 0%, #fff 100%); border-left: 4px solid var(--gold); padding: 1.25rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                    <p style="margin: 0; color: var(--navy); font-size: 0.95rem; line-height: 1.6;">
-                        <i class="fas fa-gift" style="color: var(--gold); margin-right: 0.5rem;"></i>
-                        <strong>Gift Delivery:</strong> Physical gifts can be sent to <strong>16 Mortlake Street, Islington</strong> or brought along to the wedding. We're so grateful for your thoughtfulness!
-                    </p>
-                </div>
-
                 <!-- Statistics Section -->
                 <div class="stats-section">
                     <div class="stats-grid" id="statsGrid">
@@ -5046,32 +5039,47 @@
             <div class="section-container">
                 <h2 class="section-title" data-content="gallery_title">Our Photo Gallery</h2>
 
-                <!-- Photo Upload Section -->
-                <div style="text-align: center; padding: 2rem; margin-bottom: 2rem;">
-                    <button class="upload-btn" onclick="document.getElementById('photoUpload').click()">
-                        <i class="fas fa-camera"></i> <span data-content="gallery_upload_btn">Share Your Photos</span>
-                    </button>
-                    <input type="file" id="photoUpload" style="display:none" accept="image/*" onchange="weddingEnhancements.handlePhotoUpload(event)">
-                    <p style="color: var(--botanical-blue); font-size: 0.9rem; margin-top: 0.75rem;" data-content="gallery_upload_desc">Help us capture memories from the celebration</p>
-                    <p style="color: var(--light-navy); font-size: 0.8rem; margin-top: 0.25rem; opacity: 0.7;">
-                        <i class="fas fa-magic"></i> <span data-content="gallery_upload_info">Photos are automatically optimized for fast uploads</span>
+                <!-- Gallery Locked Message (shown before wedding) -->
+                <div id="galleryLockedMessage" style="display: none; text-align: center; padding: 4rem 2rem; background: var(--cream); border-radius: var(--radius-lg); margin: 2rem 0;">
+                    <i class="fas fa-lock" style="font-size: 4rem; color: var(--navy); opacity: 0.3; margin-bottom: 1.5rem; display: block;"></i>
+                    <h3 style="color: var(--navy); font-size: 1.5rem; margin-bottom: 1rem;">Gallery Opens After The Wedding</h3>
+                    <p style="color: var(--light-navy); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                        The photo gallery will be available after our special day on <strong>March 14th, 2026</strong>.
+                    </p>
+                    <p style="color: var(--light-navy); font-size: 0.95rem; margin-top: 1rem; opacity: 0.8;">
+                        We can't wait to share the memories with you!
                     </p>
                 </div>
 
-                <!-- Gallery Grid -->
-                <div id="galleryPhotosGrid" class="gallery-grid">
-                    <!-- Skeleton loaders for gallery -->
-                    <div class="skeleton gallery-skeleton" style="aspect-ratio: 1; border-radius: 12px;"></div>
-                    <div class="skeleton gallery-skeleton" style="aspect-ratio: 1; border-radius: 12px;"></div>
-                    <div class="skeleton gallery-skeleton" style="aspect-ratio: 1; border-radius: 12px;"></div>
-                    <div class="skeleton gallery-skeleton" style="aspect-ratio: 1; border-radius: 12px;"></div>
-                </div>
+                <!-- Gallery Content (shown after wedding) -->
+                <div id="galleryContent" style="display: none;">
+                    <!-- Photo Upload Section -->
+                    <div style="text-align: center; padding: 2rem; margin-bottom: 2rem;">
+                        <button class="upload-btn" onclick="document.getElementById('photoUpload').click()">
+                            <i class="fas fa-camera"></i> <span data-content="gallery_upload_btn">Share Your Photos</span>
+                        </button>
+                        <input type="file" id="photoUpload" style="display:none" accept="image/*" onchange="weddingEnhancements.handlePhotoUpload(event)">
+                        <p style="color: var(--botanical-blue); font-size: 0.9rem; margin-top: 0.75rem;" data-content="gallery_upload_desc">Help us capture memories from the celebration</p>
+                        <p style="color: var(--light-navy); font-size: 0.8rem; margin-top: 0.25rem; opacity: 0.7;">
+                            <i class="fas fa-magic"></i> <span data-content="gallery_upload_info">Photos are automatically optimized for fast uploads</span>
+                        </p>
+                    </div>
 
-                <div id="galleryPlaceholder" style="text-align: center; padding: 3rem 2rem; display: none;">
-                    <i class="fas fa-camera" style="font-size: 3.5rem; color: var(--botanical-blue); opacity: 0.4; margin-bottom: 1rem; display: block;"></i>
-                    <p style="color: var(--light-navy); font-size: 1rem;" data-content="gallery_placeholder">
-                        No photos yet. Be the first to share!
-                    </p>
+                    <!-- Gallery Grid -->
+                    <div id="galleryPhotosGrid" class="gallery-grid">
+                        <!-- Skeleton loaders for gallery -->
+                        <div class="skeleton gallery-skeleton" style="aspect-ratio: 1; border-radius: 12px;"></div>
+                        <div class="skeleton gallery-skeleton" style="aspect-ratio: 1; border-radius: 12px;"></div>
+                        <div class="skeleton gallery-skeleton" style="aspect-ratio: 1; border-radius: 12px;"></div>
+                        <div class="skeleton gallery-skeleton" style="aspect-ratio: 1; border-radius: 12px;"></div>
+                    </div>
+
+                    <div id="galleryPlaceholder" style="text-align: center; padding: 3rem 2rem; display: none;">
+                        <i class="fas fa-camera" style="font-size: 3.5rem; color: var(--botanical-blue); opacity: 0.4; margin-bottom: 1rem; display: block;"></i>
+                        <p style="color: var(--light-navy); font-size: 1rem;" data-content="gallery_placeholder">
+                            No photos yet. Be the first to share!
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -5888,12 +5896,17 @@
                         // Reset button state
                         findBtn.innerHTML = '<i class="fas fa-check"></i> Found!';
 
-                        // Check if already RSVPed
-                        if (result.guest.hasRsvped) {
-                            console.log('👋 Guest already RSVPed, skipping to registry');
+                        // Check if anyone in the group still needs to RSVP
+                        const hasUnrsvpedMembers = result.familyMembers?.some(m => !m.hasRsvped) || false;
+                        const allRsvped = result.guest.hasRsvped && !hasUnrsvpedMembers;
+
+                        if (allRsvped) {
+                            // Everyone has RSVPed, skip to registry
+                            console.log('👋 All family members already RSVPed, skipping to registry');
                             setTimeout(() => this.showAlreadyRsvped(result.guest), 300);
                         } else {
-                            // Show RSVP form
+                            // Show RSVP form (either main guest or family members need to RSVP)
+                            console.log('📝 Showing RSVP form - main guest or family members need to RSVP');
                             setTimeout(() => this.showRsvpForm(result.guest, result.familyMembers), 300);
                         }
                     } else {
@@ -5913,7 +5926,29 @@
             showRsvpForm(guest, familyMembers) {
                 const greeting = document.getElementById('rsvpGreeting');
                 const firstName = guest.name.split(' ')[0];
-                greeting.textContent = `Hi ${firstName}! Please let us know if you can make it.`;
+
+                // Check if main guest has already RSVPed
+                if (guest.hasRsvped) {
+                    greeting.innerHTML = `Hi ${firstName}! You've already RSVPed. <span style="color: var(--success); font-weight: bold;">${guest.rsvpResponse === 'yes' ? "You're attending!" : guest.rsvpResponse === 'no' ? "You can't make it." : "You're still deciding."}</span><br><small style="color: var(--light-navy);">You can RSVP for your family members below.</small>`;
+
+                    // Hide main guest RSVP options since they've already responded
+                    const mainRsvpOptions = document.querySelector('.rsvp-options');
+                    const mainRsvpFields = document.querySelectorAll('#rsvpEmail, #rsvpDietary, #rsvpMessage');
+                    if (mainRsvpOptions) mainRsvpOptions.style.display = 'none';
+                    mainRsvpFields.forEach(field => {
+                        if (field) field.closest('.form-group')?.style.setProperty('display', 'none');
+                    });
+                } else {
+                    greeting.textContent = `Hi ${firstName}! Please let us know if you can make it.`;
+
+                    // Make sure main guest RSVP options are visible
+                    const mainRsvpOptions = document.querySelector('.rsvp-options');
+                    const mainRsvpFields = document.querySelectorAll('#rsvpEmail, #rsvpDietary, #rsvpMessage');
+                    if (mainRsvpOptions) mainRsvpOptions.style.display = 'flex';
+                    mainRsvpFields.forEach(field => {
+                        if (field) field.closest('.form-group')?.style.removeProperty('display');
+                    });
+                }
 
                 // Show family members if any (excluding the current guest)
                 const familySection = document.getElementById('familyRsvpSection');
@@ -5983,9 +6018,31 @@
             async submitRsvp() {
                 const submitBtn = document.getElementById('submitRsvpBtn');
                 const selectedAttending = document.querySelector('input[name="rsvpAttending"]:checked');
+                const mainGuestAlreadyRsvped = this.pendingGuest?.hasRsvped;
 
-                if (!selectedAttending) {
+                // If main guest hasn't RSVPed, require their response
+                if (!mainGuestAlreadyRsvped && !selectedAttending) {
                     this.showToast('Please select whether you will attend', 'error');
+                    return;
+                }
+
+                // Collect family RSVPs with emails
+                const familyRsvps = [];
+                document.querySelectorAll('.family-rsvp-select').forEach(select => {
+                    if (select.value) {
+                        const memberId = select.dataset.memberId;
+                        const emailInput = document.querySelector(`.family-email-input[data-member-id="${memberId}"]`);
+                        familyRsvps.push({
+                            guestId: memberId,
+                            attending: select.value,
+                            email: emailInput?.value || ''
+                        });
+                    }
+                });
+
+                // If main guest already RSVPed, require at least one family RSVP
+                if (mainGuestAlreadyRsvped && familyRsvps.length === 0) {
+                    this.showToast('Please select an RSVP option for at least one family member', 'error');
                     return;
                 }
 
@@ -5993,7 +6050,7 @@
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
                     submitBtn.disabled = true;
 
-                    const attending = selectedAttending.value;
+                    const attending = mainGuestAlreadyRsvped ? this.pendingGuest.rsvpResponse : selectedAttending.value;
                     const email = document.getElementById('rsvpEmail')?.value || '';
                     const dietary = document.getElementById('rsvpDietary')?.value || '';
                     const message = document.getElementById('rsvpMessage')?.value || '';
@@ -6006,31 +6063,18 @@
                         return;
                     }
 
-                    // Collect family RSVPs with emails
-                    const familyRsvps = [];
-                    document.querySelectorAll('.family-rsvp-select').forEach(select => {
-                        if (select.value) {
-                            const memberId = select.dataset.memberId;
-                            const emailInput = document.querySelector(`.family-email-input[data-member-id="${memberId}"]`);
-                            familyRsvps.push({
-                                guestId: memberId,
-                                attending: select.value,
-                                email: emailInput?.value || ''
-                            });
-                        }
-                    });
-
                     const response = await fetch('/api/guest-list/rsvp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             guestId: this.pendingGuest.id,
                             attending,
-                            email,
+                            email: mainGuestAlreadyRsvped ? null : email, // Don't update email if already RSVPed
                             guestCount: 1,
-                            dietary,
-                            message,
-                            familyRsvps
+                            dietary: mainGuestAlreadyRsvped ? null : dietary, // Don't update dietary if already RSVPed
+                            message: mainGuestAlreadyRsvped ? null : message, // Don't update message if already RSVPed
+                            familyRsvps,
+                            skipMainGuestUpdate: mainGuestAlreadyRsvped // Flag to tell server not to update main guest
                         })
                     });
 
@@ -6402,23 +6446,7 @@
 
                 const primaryImage = item.imageUrl || item.image_url;
                 const secondaryImage = item.imageUrl2 || item.imageUrlFaded;
-
-                // Show price ranges for "buy in store" items, exact prices for contribution items
-                const isBuyInStoreOnly = item.hasTarget && item.targetAmount <= 200;
-
-                // Convert exact price to approximate range for buy-in-store items
-                const getPriceRange = (price) => {
-                    if (price <= 10) return '~$5-10';
-                    if (price <= 25) return '~$15-30';
-                    if (price <= 50) return '~$30-60';
-                    if (price <= 80) return '~$50-90';
-                    if (price <= 120) return '~$80-130';
-                    if (price <= 150) return '~$120-160';
-                    if (price <= 200) return '~$150-220';
-                    return `~$${Math.floor(price * 0.85)}-${Math.ceil(price * 1.15)}`;
-                };
-
-                const displayPrice = !item.hasTarget ? 'Any amount' : (isBuyInStoreOnly ? getPriceRange(item.targetAmount) : `$${item.targetAmount.toFixed(0)}`);
+                const displayPrice = item.hasTarget ? `$${item.targetAmount.toFixed(0)}` : 'Any amount';
 
                 // Check if item should show dual photos (Dyson V11 or items explicitly set)
                 const showDualPhotos = item.name && item.name.toLowerCase().includes('dyson');
@@ -6448,8 +6476,8 @@
                             <a href="${item.storeLink}" target="_blank" rel="noopener noreferrer" class="store-link-btn">
                                 <i class="fas fa-external-link-alt"></i> View on ${hostname}
                             </a>
-                            <p style="font-size: 0.7rem; color: var(--light-navy); text-align: center; margin: 0.25rem 0 0.5rem; opacity: 0.8;">
-                                <i class="fas fa-info-circle"></i> Doesn't have to be from this store - just ensure it's the exact product
+                            <p style="font-size: 0.75rem; color: var(--light-navy); text-align: center; margin: 0.5rem 0 0.75rem; line-height: 1.4;">
+                                <i class="fas fa-info-circle"></i> It doesn't have to be from this store, just ensure it is the exact product specified!
                             </p>
                         `;
                     } catch (e) {
@@ -6457,8 +6485,8 @@
                             <a href="${item.storeLink}" target="_blank" rel="noopener noreferrer" class="store-link-btn">
                                 <i class="fas fa-external-link-alt"></i> View in Store
                             </a>
-                            <p style="font-size: 0.7rem; color: var(--light-navy); text-align: center; margin: 0.25rem 0 0.5rem; opacity: 0.8;">
-                                <i class="fas fa-info-circle"></i> Doesn't have to be from this store - just ensure it's the exact product
+                            <p style="font-size: 0.75rem; color: var(--light-navy); text-align: center; margin: 0.5rem 0 0.75rem; line-height: 1.4;">
+                                <i class="fas fa-info-circle"></i> It doesn't have to be from this store, just ensure it is the exact product specified!
                             </p>
                         `;
                     }
@@ -6474,11 +6502,9 @@
                         <div class="card-content">
                             <div class="card-header">
                                 <div class="card-title">${item.name}</div>
-                                ${displayPrice ? `<div class="card-price">${displayPrice}</div>` : ''}
                             </div>
                             <p class="card-description">${item.description}</p>
 
-                            ${!isBuyInStoreOnly ? `
                             <div class="card-progress">
                                 <div class="card-progress-bar">
                                     <div class="card-progress-fill" style="width: ${progressPercentage}%"></div>
@@ -6493,7 +6519,6 @@
                                     `}
                                 </div>
                             </div>
-                            ` : ''}
 
                             ${storeLinkBtn}
 
@@ -6692,7 +6717,7 @@
                     return matchesSearch && matchesFilter;
                 });
 
-                // Sort items: Honeymoon first, Gift cards second, then cheapest to most expensive, completed at bottom
+                // Sort items: Honeymoon fund first, then gift cards, then by price (cheapest to most expensive)
                 this.filteredItems.sort((a, b) => {
                     // Check if items are honeymoon fund (donation style)
                     const aIsHoneymoon = a.name && a.name.toLowerCase().includes('honeymoon');
@@ -6702,15 +6727,7 @@
                     const aIsGiftCard = (a.name && a.name.toLowerCase().includes('gift card')) || a.category === 'Gift Cards';
                     const bIsGiftCard = (b.name && b.name.toLowerCase().includes('gift card')) || b.category === 'Gift Cards';
 
-                    // Check completion status
-                    const aCompleted = a.hasTarget && a.currentAmount >= a.targetAmount;
-                    const bCompleted = b.hasTarget && b.currentAmount >= b.targetAmount;
-
-                    // Completed items always go to the bottom
-                    if (aCompleted && !bCompleted) return 1;
-                    if (!aCompleted && bCompleted) return -1;
-
-                    // Within incomplete items: Honeymoon fund comes first
+                    // Honeymoon fund comes first
                     if (aIsHoneymoon && !bIsHoneymoon) return -1;
                     if (!aIsHoneymoon && bIsHoneymoon) return 1;
 
@@ -6718,10 +6735,20 @@
                     if (aIsGiftCard && !bIsGiftCard) return -1;
                     if (!aIsGiftCard && bIsGiftCard) return 1;
 
-                    // For remaining items, sort by price (cheapest to most expensive)
-                    const aPrice = a.hasTarget ? a.targetAmount : 999999;
-                    const bPrice = b.hasTarget ? b.targetAmount : 999999;
-                    return aPrice - bPrice;
+                    // Then sort by completion status (completed items go to the bottom)
+                    const aCompleted = a.hasTarget && a.currentAmount >= a.targetAmount;
+                    const bCompleted = b.hasTarget && b.currentAmount >= b.targetAmount;
+                    if (aCompleted && !bCompleted) return 1;  // a goes after b
+                    if (!aCompleted && bCompleted) return -1; // a goes before b
+
+                    // For incomplete items, sort by price (cheapest to most expensive)
+                    if (!aCompleted && !bCompleted) {
+                        const aPrice = a.hasTarget ? a.targetAmount : 0;
+                        const bPrice = b.hasTarget ? b.targetAmount : 0;
+                        return aPrice - bPrice; // ascending order (cheapest first)
+                    }
+
+                    return 0; // keep original order for completed items
                 });
 
                 this.renderItems();
@@ -7347,9 +7374,28 @@
             }
         }
 
+        // Check gallery access based on wedding date
+        function checkGalleryAccess() {
+            const weddingDate = new Date('2026-03-14T23:59:59'); // March 14, 2026 at end of day
+            const now = new Date();
+            const galleryContent = document.getElementById('galleryContent');
+            const galleryLockedMessage = document.getElementById('galleryLockedMessage');
+
+            if (now >= weddingDate) {
+                // After wedding - show gallery
+                if (galleryContent) galleryContent.style.display = 'block';
+                if (galleryLockedMessage) galleryLockedMessage.style.display = 'none';
+            } else {
+                // Before wedding - show locked message
+                if (galleryContent) galleryContent.style.display = 'none';
+                if (galleryLockedMessage) galleryLockedMessage.style.display = 'block';
+            }
+        }
+
         // Initialize the website when the page loads
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🚀 DOM loaded, initializing wedding website...');
+            checkGalleryAccess();
             registryApp = new WeddingWebsite();
         });
 
@@ -7359,6 +7405,7 @@
         } else {
             // DOM is already loaded
             console.log('🚀 DOM already loaded, initializing wedding website...');
+            checkGalleryAccess();
             registryApp = new WeddingWebsite();
         }
 
