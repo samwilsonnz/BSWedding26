@@ -334,6 +334,8 @@ app.post('/api/create-payment-intent', rateLimitMiddleware(rateLimiterPayment), 
             amount: Math.round(amount * 100), // Convert to cents
             currency: currency,
             payment_method_types: ['card'], // Card includes Apple Pay & Google Pay when enabled
+            description: `Wedding Gift: ${itemName}`,
+            statement_descriptor_suffix: 'WEDDING GIFT',
             metadata: {
                 itemId: itemId.toString(),
                 itemName: itemName,
@@ -1181,6 +1183,8 @@ app.post('/api/items/:id/contribute', rateLimitMiddleware(rateLimiterPayment), a
                 payment_method: paymentMethodId,
                 confirm: true,
                 return_url: `${req.protocol}://${req.get('host')}/`,
+                description: `Wedding Gift: ${item.name} - from ${guest ? guest.name : 'Anonymous'}`,
+                statement_descriptor_suffix: 'WEDDING GIFT',
                 metadata: {
                     itemId: id.toString(),
                     itemName: item.name,
