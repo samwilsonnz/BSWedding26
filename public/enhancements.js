@@ -286,12 +286,38 @@ class WeddingEnhancements {
 
     // Load Gallery Photos
     async loadGalleryPhotos() {
+        const galleryContainer = document.getElementById('galleryPhotosGrid');
+        const placeholder = document.getElementById('galleryPlaceholder');
+        const uploadBtn = document.querySelector('.upload-btn');
+        const uploadSection = uploadBtn?.closest('div');
+
+        // Gallery opens March 14, 2026 at 5:00 PM NZ time
+        const galleryOpenDate = new Date('2026-03-14T17:00:00+13:00');
+        const now = new Date();
+
+        if (now < galleryOpenDate) {
+            // Gallery is locked - show countdown message
+            if (galleryContainer) {
+                galleryContainer.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 2rem;">
+                        <i class="fas fa-lock" style="font-size: 4rem; color: var(--botanical-blue); opacity: 0.5; margin-bottom: 1.5rem; display: block;"></i>
+                        <h3 style="color: var(--navy); margin-bottom: 0.75rem;">Gallery Opens on Wedding Day</h3>
+                        <p style="color: var(--light-navy); font-size: 1rem;">
+                            The photo gallery will be available from 5:00 PM on March 14th, 2026.<br>
+                            <span style="font-size: 0.9rem; opacity: 0.8;">Check back during the reception to share and view photos!</span>
+                        </p>
+                    </div>
+                `;
+            }
+            if (placeholder) placeholder.style.display = 'none';
+            if (uploadSection) uploadSection.style.display = 'none';
+            return;
+        }
+
+        // Gallery is open - load photos
         try {
             const response = await fetch('/api/gallery/photos');
             const photos = await response.json();
-
-            const galleryContainer = document.getElementById('galleryPhotosGrid');
-            const placeholder = document.getElementById('galleryPlaceholder');
 
             if (galleryContainer) {
                 if (photos.length > 0) {

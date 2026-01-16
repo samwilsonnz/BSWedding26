@@ -4764,7 +4764,19 @@
                         <div class="timeline-content">
                             <h3 data-content="schedule_dancing_title">Dancing & Party</h3>
                             <div class="timeline-time"><i class="far fa-clock"></i> <span data-content="schedule_dancing_time">7:00 PM</span></div>
-                            <p data-content="schedule_dancing_desc">Let's dance the night away! The dance floor will be open and the party continues late into the evening.</p>
+                            <p data-content="schedule_dancing_desc">Let's dance the night away! The dance floor will be open and the party continues.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                            </svg>
+                        </div>
+                        <div class="timeline-content">
+                            <h3 data-content="schedule_end_title">End of Celebration</h3>
+                            <div class="timeline-time"><i class="far fa-clock"></i> <span data-content="schedule_end_time">10:00 PM</span></div>
+                            <p data-content="schedule_end_desc">Thank you for celebrating with us! Safe travels home.</p>
                         </div>
                     </div>
                 </div>
@@ -6382,7 +6394,23 @@
 
                 const primaryImage = item.imageUrl || item.image_url;
                 const secondaryImage = item.imageUrl2 || item.imageUrlFaded;
-                const displayPrice = item.hasTarget ? `$${item.targetAmount.toFixed(0)}` : 'Any amount';
+
+                // Show price ranges for "buy in store" items, exact prices for contribution items
+                const isBuyInStoreOnly = item.hasTarget && item.targetAmount <= 200;
+
+                // Convert exact price to approximate range for buy-in-store items
+                const getPriceRange = (price) => {
+                    if (price <= 10) return '~$5-10';
+                    if (price <= 25) return '~$15-30';
+                    if (price <= 50) return '~$30-60';
+                    if (price <= 80) return '~$50-90';
+                    if (price <= 120) return '~$80-130';
+                    if (price <= 150) return '~$120-160';
+                    if (price <= 200) return '~$150-220';
+                    return `~$${Math.floor(price * 0.85)}-${Math.ceil(price * 1.15)}`;
+                };
+
+                const displayPrice = !item.hasTarget ? 'Any amount' : (isBuyInStoreOnly ? getPriceRange(item.targetAmount) : `$${item.targetAmount.toFixed(0)}`);
 
                 // Check if item should show dual photos (Dyson V11 or items explicitly set)
                 const showDualPhotos = item.name && item.name.toLowerCase().includes('dyson');
@@ -6412,12 +6440,18 @@
                             <a href="${item.storeLink}" target="_blank" rel="noopener noreferrer" class="store-link-btn">
                                 <i class="fas fa-external-link-alt"></i> View on ${hostname}
                             </a>
+                            <p style="font-size: 0.7rem; color: var(--light-navy); text-align: center; margin: 0.25rem 0 0.5rem; opacity: 0.8;">
+                                <i class="fas fa-info-circle"></i> Doesn't have to be from this store - just ensure it's the exact product
+                            </p>
                         `;
                     } catch (e) {
                         storeLinkBtn = `
                             <a href="${item.storeLink}" target="_blank" rel="noopener noreferrer" class="store-link-btn">
                                 <i class="fas fa-external-link-alt"></i> View in Store
                             </a>
+                            <p style="font-size: 0.7rem; color: var(--light-navy); text-align: center; margin: 0.25rem 0 0.5rem; opacity: 0.8;">
+                                <i class="fas fa-info-circle"></i> Doesn't have to be from this store - just ensure it's the exact product
+                            </p>
                         `;
                     }
                 }
@@ -6432,10 +6466,11 @@
                         <div class="card-content">
                             <div class="card-header">
                                 <div class="card-title">${item.name}</div>
-                                <div class="card-price">${displayPrice}</div>
+                                ${displayPrice ? `<div class="card-price">${displayPrice}</div>` : ''}
                             </div>
                             <p class="card-description">${item.description}</p>
 
+                            ${!isBuyInStoreOnly ? `
                             <div class="card-progress">
                                 <div class="card-progress-bar">
                                     <div class="card-progress-fill" style="width: ${progressPercentage}%"></div>
@@ -6450,6 +6485,7 @@
                                     `}
                                 </div>
                             </div>
+                            ` : ''}
 
                             ${storeLinkBtn}
 
@@ -6648,7 +6684,7 @@
                     return matchesSearch && matchesFilter;
                 });
 
-                // Sort items: Gift cards first, then incomplete, then completed at the bottom
+                // Sort items: Honeymoon first, Gift cards second, then cheapest to most expensive, completed at bottom
                 this.filteredItems.sort((a, b) => {
                     // Check if items are honeymoon fund (donation style)
                     const aIsHoneymoon = a.name && a.name.toLowerCase().includes('honeymoon');
@@ -6658,7 +6694,15 @@
                     const aIsGiftCard = (a.name && a.name.toLowerCase().includes('gift card')) || a.category === 'Gift Cards';
                     const bIsGiftCard = (b.name && b.name.toLowerCase().includes('gift card')) || b.category === 'Gift Cards';
 
-                    // Honeymoon fund comes first
+                    // Check completion status
+                    const aCompleted = a.hasTarget && a.currentAmount >= a.targetAmount;
+                    const bCompleted = b.hasTarget && b.currentAmount >= b.targetAmount;
+
+                    // Completed items always go to the bottom
+                    if (aCompleted && !bCompleted) return 1;
+                    if (!aCompleted && bCompleted) return -1;
+
+                    // Within incomplete items: Honeymoon fund comes first
                     if (aIsHoneymoon && !bIsHoneymoon) return -1;
                     if (!aIsHoneymoon && bIsHoneymoon) return 1;
 
@@ -6666,12 +6710,10 @@
                     if (aIsGiftCard && !bIsGiftCard) return -1;
                     if (!aIsGiftCard && bIsGiftCard) return 1;
 
-                    // Then sort by completion status
-                    const aCompleted = a.hasTarget && a.currentAmount >= a.targetAmount;
-                    const bCompleted = b.hasTarget && b.currentAmount >= b.targetAmount;
-                    if (aCompleted && !bCompleted) return 1;  // a goes after b
-                    if (!aCompleted && bCompleted) return -1; // a goes before b
-                    return 0; // keep original order
+                    // For remaining items, sort by price (cheapest to most expensive)
+                    const aPrice = a.hasTarget ? a.targetAmount : 999999;
+                    const bPrice = b.hasTarget ? b.targetAmount : 999999;
+                    return aPrice - bPrice;
                 });
 
                 this.renderItems();
