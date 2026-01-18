@@ -16,12 +16,29 @@
       "contributions": [],
       "dateAdded": "2025-07-02T05:58:00.804Z",
       "lastAccess": "2025-09-08T09:14:10.817Z"
+    },
+    {
+      "id": "1737215000000",
+      "name": "Lucy Sutcliffe",
+      "email": "",
+      "phone": "",
+      "guestCode": "9IC5A7",
+      "invitationType": "single",
+      "guestCount": 1,
+      "dietaryRestrictions": "",
+      "notes": "",
+      "rsvpStatus": "pending",
+      "hasAccessed": false,
+      "totalContributed": 0,
+      "contributions": [],
+      "dateAdded": "2026-01-18T00:00:00.000Z",
+      "lastAccess": null
     }
   ],
   "statistics": {
-    "totalGuests": 1,
+    "totalGuests": 2,
     "guestsWithAccess": 0,
     "totalContributions": 0,
-    "lastUpdated": "2025-07-02T05:58:00.804Z"
+    "lastUpdated": "2026-01-18T00:00:00.000Z"
   }
 }
